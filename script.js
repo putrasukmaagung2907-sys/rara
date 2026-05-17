@@ -331,24 +331,47 @@ document.addEventListener("DOMContentLoaded", function() {
     const videoModal = document.getElementById("videoModal");
     const closeVideoModal = document.querySelector(".close-video-modal");
     const myVideo = document.getElementById("myVideo");
+    
+    // Variabel untuk mengingat apakah lagu sedang menyala sebelum video diklik
+    let wasMusicPlaying = false; 
 
     if (btnHaiSayang) {
         btnHaiSayang.addEventListener("click", () => {
+            // 1. Ingat status musik saat ini
+            wasMusicPlaying = isPlaying; 
+            
+            // 2. Jika musik sedang menyala, JEDA (pause) musiknya
+            if (isPlaying) {
+                pauseTrack(); 
+            }
+            
+            // 3. Tampilkan dan putar video
             videoModal.style.display = "flex";
             myVideo.play(); 
         });
     }
-    if (closeVideoModal) {
-        closeVideoModal.addEventListener("click", () => {
-            videoModal.style.display = "none";
-            myVideo.pause(); 
-        });
+
+    // Fungsi gabungan untuk menutup video
+    function closeVideoAndResumeMusic() {
+        videoModal.style.display = "none";
+        myVideo.pause(); // Jeda video agar tidak bocor di background
+        
+        // Putar kembali musik HANYA JIKA sebelum video dibuka musiknya memang sedang menyala
+        if (wasMusicPlaying) {
+            playTrack();
+        }
     }
+
+    // Pasang fungsi tutup ke tombol X
+    if (closeVideoModal) {
+        closeVideoModal.addEventListener("click", closeVideoAndResumeMusic);
+    }
+
+    // Pasang fungsi tutup jika area hitam di luar video diklik
     if (videoModal) {
         videoModal.addEventListener("click", (e) => {
             if (e.target === videoModal) {
-                videoModal.style.display = "none";
-                myVideo.pause();
+                closeVideoAndResumeMusic();
             }
         });
     }
@@ -429,6 +452,70 @@ document.addEventListener("DOMContentLoaded", function() {
     if (searchModal) {
         searchModal.addEventListener("click", (e) => {
             if (e.target === searchModal) searchModal.style.display = "none";
+        });
+    }
+    // === FITUR INTERAKSI ACTION BAR (Tengah) ===
+    const btnActionHeart = document.getElementById("btnActionHeart");
+    const btnActionDownload = document.getElementById("btnActionDownload");
+    const btnActionMore = document.getElementById("btnActionMore");
+    const btnCustomOrder = document.getElementById("btnCustomOrder");
+
+    // 1. Interaksi Ikon Love (Playlist)
+    if (btnActionHeart) {
+        btnActionHeart.addEventListener("click", function() {
+            const icon = this.querySelector("i");
+            // Toggle ganti ikon regular/solid
+            if (icon.classList.contains("fa-regular")) {
+                icon.classList.replace("fa-regular", "fa-solid");
+                this.style.color = "var(--primary-color)"; // Ubah warna jadi hijau
+                showToast("Playlist ditambahkan ke Favorit! 💚");
+            } else {
+                icon.classList.replace("fa-solid", "fa-regular");
+                this.style.color = ""; // Kembalikan warna ke abu-abu
+                showToast("Playlist dihapus dari Favorit 💔");
+            }
+        });
+    }
+
+    // 2. Interaksi Ikon Download
+    if (btnActionDownload) {
+        btnActionDownload.addEventListener("click", function() {
+            const icon = this.querySelector("i");
+            // Jika belum hijau, jadikan hijau (seolah sudah didownload)
+            if (this.style.color !== "var(--primary-color)") {
+                this.style.color = "var(--primary-color)";
+                showToast("Mengunduh playlist... 📥");
+            } else {
+                this.style.color = "";
+                showToast("Hapus unduhan playlist. 🗑️");
+            }
+        });
+    }
+
+    // 3. Interaksi Titik Tiga
+    if (btnActionMore) {
+        btnActionMore.addEventListener("click", function() {
+            showToast("Membuka menu opsi lainnya... ⚙️");
+        });
+    }
+    // 4. Interaksi Custom Order (Sortir)
+    if (btnCustomOrder) {
+        // Array urutan teks
+        const orderTypes = ["Custom order", "Title", "Artist", "Album"];
+        let currentOrderIndex = 0;
+
+        btnCustomOrder.addEventListener("click", function() {
+            currentOrderIndex++;
+            // Jika sudah di ujung array, kembali ke awal
+            if (currentOrderIndex >= orderTypes.length) {
+                currentOrderIndex = 0;
+            }
+            
+            const newOrderText = orderTypes[currentOrderIndex];
+            // Ubah isi teks, tapi pertahankan ikon panah ke bawah
+            this.innerHTML = `${newOrderText} <i class="fa-solid fa-caret-down"></i>`;
+            
+            showToast(`Mengurutkan berdasarkan: ${newOrderText} 🔄`);
         });
     }
 });
