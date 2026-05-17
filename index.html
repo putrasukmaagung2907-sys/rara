@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sukma & Rara Special Playlist</title>
+    <title>Rara Special Playlist</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
@@ -19,13 +19,13 @@
                 <span class="dot green"></span>
             </div>
             <ul class="nav-links">
-                <li><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
-                <li><a href="#"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
+                <li><a href="#" id="btnHome"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="#" id="btnSearch"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
                 <li><a href="#" id="btnDestination"><i class="fa-solid fa-book-open"></i> Your Destination</a></li>
             </ul>
             <ul class="nav-links action-links">
-                <li><a href="#"><div class="icon-box plus"><i class="fa-solid fa-plus"></i></div> Create Playlist</a></li>
-                <li><a href="#"><div class="icon-box heart"><i class="fa-solid fa-heart"></i></div> Liked Songs</a></li>
+                <li><a href="#" id="btnCreatePlaylist"><div class="icon-box plus"><i class="fa-solid fa-plus"></i></div> Create Playlist</a></li>
+                <li><a href="#" id="btnLikedSongs"><div class="icon-box heart"><i class="fa-solid fa-heart"></i></div> Liked Songs</a></li>
             </ul>
             <div class="divider"></div>
             <div class="playlist-list">
@@ -48,11 +48,15 @@
             <div class="top-bar">
                 <button class="mobile-toggle-btn" id="toggleLeftBtn"><i class="fa-solid fa-bars"></i></button>
 
-                 <div class="top-bar-right">
-                    <button class="upgrade-btn">Haii Sayang❤️</button>
+                <div class="nav-arrows">
+                    <button><i class="fa-solid fa-chevron-left"></i></button>
+                    <button><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="top-bar-right">
+                    <button class="upgrade-btn" id="btnHaiSayang">Haii Sayang ❤️</button>
                     <div class="user-profile">
                         <img src="kucing.jpg" alt="User">
-                        <span>Enjoy your special playlist</span>
+                        <span>Enjoy Your special playlist</span>
                         <i class="fa-solid fa-caret-down"></i>
                     </div>
                     <button class="mobile-toggle-btn" id="toggleRightBtn"><i class="fa-solid fa-user-group"></i></button>
@@ -69,7 +73,7 @@
                 </div>
                 <div class="playlist-info">
                     <span class="playlist-type">SPECIAL PLAYLIST</span>
-                    <h1 class="playlist-title">Sukma & Asrarul</h1>
+                    <h1 class="playlist-title">Suk & Ara</h1>
                     <p class="playlist-desc"><strong>Sukma</strong> & <strong>Rara</strong>: The Beginning.</p>
                     <div class="playlist-meta">
                         <i class="fa-brands fa-spotify spotify-icon"></i>
@@ -86,7 +90,7 @@
                 <button class="icon-btn"><i class="fa-solid fa-ellipsis"></i></button>
                 
                 <div class="action-right">
-                    <button class="icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <button class="icon-btn" id="btnSearchRight"><i class="fa-solid fa-magnifying-glass"></i></button>
                     <span class="custom-order">Custom order <i class="fa-solid fa-caret-down"></i></span>
                 </div>
             </div>
@@ -132,15 +136,15 @@
                         <tr>
                             <td>3</td>
                             <td class="title-cell">
-                                <img src="Banda.png" alt="Cover">
+                                <img src="batas.png" alt="Cover">
                                 <div class="title-info">
-                                    <span class="song-name">Sampai Jadi Debu</span>
-                                    <span class="artist-name">Banda Neira</span>
+                                    <span class="song-name">Menceritakanmu</span>
+                                    <span class="artist-name">Batas Senja</span>
                                 </div>
                             </td>
-                            <td>Banda Neira</td>
+                            <td>Batas Senja</td>
                             <td><img src="suk.jpeg" class="added-by-avatar" alt="Sukma"></td>
-                            <td>6:48</td>
+                            <td>3:59</td>
                         </tr>
                         <tr>
                             <td>4</td>
@@ -274,6 +278,24 @@
             <span class="close-map-modal">&times;</span>
             <div id="mapContainer"></div>
         </div>
+
+        <div id="videoModal" class="image-modal">
+            <span class="close-video-modal">&times;</span>
+            <video class="modal-content" id="myVideo" controls>
+                <source src="hai.mp4" type="video/mp4">
+                Maaf, browsermu tidak mendukung pemutar video.
+            </video>
+        </div>
+
+        <div id="searchModal" class="image-modal">
+            <span class="close-search-modal">&times;</span>
+            <div class="search-container">
+                <h2>Cari Lagu atau Artis</h2>
+                <input type="text" id="searchInput" placeholder="Ketik nama lagu atau artis di sini...">
+            </div>
+        </div>
+
+        <div id="toastNotification" class="toast">Notifikasi muncul di sini</div>
 
     </div> <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>

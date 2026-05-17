@@ -31,57 +31,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // === DATA PLAYLIST ===
     const myPlaylist = [
-        {
-            title: "Superpowers",
-            artist: "Daniel Caesar",
-            cover: "Daniel.png",
-            file: "Superpowers.mp3" 
-        },
-        {
-            title: "everything you are",
-            artist: "Hindia",
-            cover: "Hindia.png",
-            file: "Hindia - everything u are.mp3" 
-        },
-        {
-            title: "Sampai Jadi Debu",
-            artist: "Banda Neira",
-            cover: "Banda.png",
-            file: "Banda Neira - Sampai Jadi Debu.mp3" 
-        },
-        {
-            title: "Diri",
-            artist: "Tulus",
-            cover: "Tulus.png",
-            file: "TULUS - Diri.mp3" 
-        },
-        {
-            title: "Blessed",
-            artist: "Daniel Caesar",
-            cover: "Daniel.png",
-            file: "Blessed.mp3" 
-        },
-        {
-            title: "Here With Me",
-            artist: "d4vd",
-            cover: "d4vd.png",
-            file: "Here With Me.mp3" 
-        }
+        { title: "Superpowers", artist: "Daniel Caesar", cover: "Daniel.png", file: "Superpowers.mp3" },
+        { title: "everything you are", artist: "Hindia", cover: "Hindia.png", file: "Hindia - everything u are.mp3" },
+        { title: "Menceritakanmu", artist: "Batas Senja", cover: "batas.png", file: "Batas Senja.mp3" },
+        { title: "Diri", artist: "Tulus", cover: "Tulus.png", file: "TULUS - Diri.mp3" },
+        { title: "Blessed", artist: "Daniel Caesar", cover: "Daniel.png", file: "Blessed.mp3" },
+        { title: "Here With Me", artist: "d4vd", cover: "d4vd.png", file: "Here With Me.mp3" }
     ];
 
-    // === STATE APLIKASI ===
     let currentTrackIndex = 0;
     let isPlaying = false;
     let isShuffle = false;
     let isRepeat = false;
 
-    // Membuat elemen <audio> di latar belakang
+    // Elemen <audio> di latar belakang
     const audioPlayer = document.createElement("audio");
     audioPlayer.id = "audioPlayer";
     document.body.appendChild(audioPlayer);
     audioPlayer.volume = 1; 
 
-    // === FUNGSI BANTUAN FORMAT WAKTU ===
+    // Bantuan Format Waktu
     function formatTime(seconds) {
         if (isNaN(seconds)) return "0:00";
         const min = Math.floor(seconds / 60);
@@ -97,38 +66,31 @@ document.addEventListener("DOMContentLoaded", function() {
         playerTitle.textContent = track.title;
         playerArtist.textContent = track.artist;
         
-        // Reset waktu dan progress bar ke 0
         trackProgress.style.width = "0%";
         timeCurrentEl.textContent = "0:00";
 
-        // === FITUR BARU: NOTIFIKASI HP (MEDIA SESSION API) ===
+        // Fitur Media Session (Layar Kunci HP)
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: track.title,
                 artist: track.artist,
                 album: "Sukma & Asrarul Special Playlist",
                 artwork: [
-                    // Mengambil gambar dari playlist untuk ditampilkan di notif HP
                     { src: track.cover, sizes: '96x96', type: 'image/png' },
-                    { src: track.cover, sizes: '128x128', type: 'image/png' },
-                    { src: track.cover, sizes: '192x192', type: 'image/png' },
                     { src: track.cover, sizes: '256x256', type: 'image/png' },
-                    { src: track.cover, sizes: '384x384', type: 'image/png' },
                     { src: track.cover, sizes: '512x512', type: 'image/png' }
                 ]
             });
         }
     }
 
-    // Panggil lagu pertama saat dimuat
-    loadTrack(currentTrackIndex);
+    loadTrack(currentTrackIndex); // Muat saat pertama dibuka
 
     function playTrack() {
         audioPlayer.play();
         isPlaying = true;
         bottomIcon.classList.replace("fa-play", "fa-pause");
         mainIcon.classList.replace("fa-play", "fa-pause");
-        
         playerCover.classList.add("is-spinning");
     }
 
@@ -137,17 +99,12 @@ document.addEventListener("DOMContentLoaded", function() {
         isPlaying = false;
         bottomIcon.classList.replace("fa-pause", "fa-play");
         mainIcon.classList.replace("fa-pause", "fa-play");
-        
         playerCover.classList.remove("is-spinning");
     }
 
     function togglePlay() {
-        if (isPlaying) {
-            pauseTrack();
-        } else {
-            if (!audioPlayer.src || audioPlayer.src === window.location.href) {
-                loadTrack(currentTrackIndex);
-            }
+        if (isPlaying) { pauseTrack(); } else {
+            if (!audioPlayer.src || audioPlayer.src === window.location.href) loadTrack(currentTrackIndex);
             playTrack();
         }
     }
@@ -178,7 +135,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // === EVENT LISTENER: TOMBOL KLIK ===
     bottomPlayBtn.addEventListener("click", togglePlay);
     mainPlayBtn.addEventListener("click", togglePlay);
     nextBtn.addEventListener("click", nextTrack);
@@ -188,12 +144,10 @@ document.addEventListener("DOMContentLoaded", function() {
         isShuffle = !isShuffle;
         shuffleBtn.classList.toggle("control-active", isShuffle);
     });
-
     repeatBtn.addEventListener("click", () => {
         isRepeat = !isRepeat;
         repeatBtn.classList.toggle("control-active", isRepeat);
     });
-
     heartBtn.addEventListener("click", () => {
         heartBtn.classList.toggle("heart-active");
     });
@@ -207,17 +161,11 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // === UPDATE WAKTU DAN PROGRESS BAR OTOMATIS ===
-    audioPlayer.addEventListener("loadeddata", () => {
-        timeTotalEl.textContent = formatTime(audioPlayer.duration);
-    });
-
+    audioPlayer.addEventListener("loadeddata", () => { timeTotalEl.textContent = formatTime(audioPlayer.duration); });
     audioPlayer.addEventListener("timeupdate", () => {
         const currentTime = audioPlayer.currentTime;
         const duration = audioPlayer.duration;
-        
         timeCurrentEl.textContent = formatTime(currentTime);
-        
         if (duration) {
             const progressPercent = (currentTime / duration) * 100;
             trackProgress.style.width = `${progressPercent}%`;
@@ -228,40 +176,20 @@ document.addEventListener("DOMContentLoaded", function() {
         const width = trackProgressBar.clientWidth;
         const clickX = e.offsetX; 
         const duration = audioPlayer.duration;
-        
-        if (duration) {
-            audioPlayer.currentTime = (clickX / width) * duration;
-        }
+        if (duration) audioPlayer.currentTime = (clickX / width) * duration;
     });
 
-    audioPlayer.addEventListener("ended", () => {
-        if (isRepeat) {
-            audioPlayer.currentTime = 0;
-            playTrack();
-        } else {
-            nextTrack();
-        }
-    });
+    audioPlayer.addEventListener("ended", () => { if (isRepeat) { audioPlayer.currentTime = 0; playTrack(); } else { nextTrack(); } });
 
-    // === FITUR VOLUME ===
     volumeProgressBar.addEventListener("click", (e) => {
         const width = volumeProgressBar.clientWidth;
-        const clickX = e.offsetX;
-        let volume = clickX / width;
-        
-        if (volume < 0) volume = 0;
-        if (volume > 1) volume = 1;
-        
+        let volume = e.offsetX / width;
+        if (volume < 0) volume = 0; if (volume > 1) volume = 1;
         audioPlayer.volume = volume;
         volumeProgress.style.width = `${volume * 100}%`;
-
-        if (volume === 0) {
-            muteIcon.className = "fa-solid fa-volume-xmark";
-        } else if (volume < 0.5) {
-            muteIcon.className = "fa-solid fa-volume-low";
-        } else {
-            muteIcon.className = "fa-solid fa-volume-high";
-        }
+        if (volume === 0) { muteIcon.className = "fa-solid fa-volume-xmark"; } 
+        else if (volume < 0.5) { muteIcon.className = "fa-solid fa-volume-low"; } 
+        else { muteIcon.className = "fa-solid fa-volume-high"; }
     });
 
     let previousVolume = 1;
@@ -278,6 +206,18 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // === DEKLARASI SIDEBAR UNTUK MENU & MODAL ===
+    const sidebarLeft = document.querySelector(".sidebar-left");
+    const mobileOverlay = document.getElementById("mobileOverlay");
+
+    // FUNGSI UMUM TUTUP MENU MOBILE
+    function closeMobileMenu() {
+        if (sidebarLeft && sidebarLeft.classList.contains("active")) {
+            sidebarLeft.classList.remove("active");
+            mobileOverlay.classList.remove("active");
+        }
+    }
+
     // === FITUR MODAL GAMBAR UNTUK LIST FAVORIT ===
     const favoritesList = document.querySelectorAll("#favoritesList li:not(.nav-header)");
     const imageModal = document.getElementById("imageModal");
@@ -289,22 +229,15 @@ document.addEventListener("DOMContentLoaded", function() {
         item.addEventListener("click", function() {
             const imageUrl = this.getAttribute("data-image");
             const itemName = this.textContent;
-
             modalImage.src = imageUrl;
             modalCaption.textContent = itemName;
             imageModal.style.display = "flex";
+            closeMobileMenu();
         });
     });
 
-    closeModal.addEventListener("click", () => {
-        imageModal.style.display = "none";
-    });
-
-    imageModal.addEventListener("click", (e) => {
-        if (e.target === imageModal) {
-            imageModal.style.display = "none";
-        }
-    });
+    closeModal.addEventListener("click", () => { imageModal.style.display = "none"; });
+    imageModal.addEventListener("click", (e) => { if (e.target === imageModal) imageModal.style.display = "none"; });
 
     // === FITUR PETA DESTINASI COUPLE ===
     const btnDestination = document.getElementById("btnDestination");
@@ -315,37 +248,37 @@ document.addEventListener("DOMContentLoaded", function() {
     btnDestination.addEventListener("click", function(e) {
         e.preventDefault(); 
         mapModal.style.display = "flex";
+        closeMobileMenu();
 
         if (!map) {
             map = L.map('mapContainer').setView([-2.5489, 118.0149], 5);
-
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
 
             const destinations = [
-                { lat: -0.9525, lng: 100.3524, title: "Taplau", desc: "Singkatan dari Tapi Lauik, pantai ini berada tepat di jantung kota. Tempat paling seru untuk berburu sunset, menikmati jagung bakar, dan mencicipi langkitang (kuliner kerang khas) sambil menikmati semilir angin laut. 🏖️", image: "Taplau.jpg" },
-                { lat: -0.95525, lng: 100.355833, title: "Museum Adityawarman", desc: "Sering disebut sebagai Taman Mini-nya Sumatera Barat. Bangunan utamanya berbentuk Rumah Gadang yang megah, menyimpan ribuan koleksi artefak budaya, pakaian adat, hingga sejarah sistem kekerabatan matriarki Minangkabau.", image: "Museum.jpg" },
+                { lat: -0.9525, lng: 100.3524, title: "Taplau", desc: "Singkatan dari Tapi Lauik, pantai ini berada tepat di jantung kota. 🏖️", image: "Taplau.jpg" },
+                { lat: -0.95525, lng: 100.355833, title: "Museum Adityawarman", desc: "Taman Mini-nya Sumatera Barat. Bangunan utamanya berbentuk Rumah Gadang.", image: "Museum.jpg" },
                 { lat: -0.9390573, lng: 100.4538228, title: "Asrarul Fajriah", desc: "Wanita cantik dengan panggilan rara tinggal disini", image: "rr1.png" },
-                { lat: -0.97096, lng: 100.36594, title: "Gunung Padang", desc: "Sebenarnya ini adalah sebuah bukit kecil di pinggir laut dengan ketinggian sekitar 80 meter. Di puncaknya terdapat situs yang dipercaya sebagai Makam Siti Nurbaya serta pemandangan panorama Kota Padang dan Samudra Hindia dari ketinggian.", image: "Gp.jpg" },
-                { lat: -0.9599, lng: 100.3601, title: "China Town", desc: "Kawasan pecinan tua Padang yang merefleksikan tingginya toleransi di kota ini. Di sini berdiri Kelenteng See Hin Kiong yang megah. Kawasan ini juga menjadi pusat berburu kuliner legendaris, kopi es tradisional, dan jajanan malam.", image: "Ct.jpg" },
-                { lat: -0.9482, lng: 100.4287, title: "Bukit Nobita", desc: "Terinspirasi dari bukit di belakang sekolah film kartun Doraemon, tempat ini menawarkan pemandangan city light Kota Padang 360 derajat yang sangat romantis di malam hari dari atas ketinggian bukit.", image: "Bn.jpg" },
-                { lat: -6.1759, lng: 106.8324, title: "Galeri Nasional Indonesia", desc: "Salah satu lembaga budaya terpenting di Indonesia yang berfungsi sebagai museum dan galeri seni rupa modern dan kontemporer. Tempat ini menyimpan ribuan koleksi karya seniman legendaris Indonesia seperti Raden Saleh, Affandi, dan Basoeki Abdullah.", image: "Gai.jpg" },
-                { lat: -6.1478, lng: 106.8407, title: "Art:1 New Museum", desc: "Berada di kawasan Kemayoran, destinasi ini memadukan konsep museum seni privat dan galeri komersial. Seni kontemporer dan modern dipamerkan dalam bangunan berarsitektur minimalis yang sangat estetik.", image: "art1.jpg" },
-                { lat: -6.1764, lng: 106.8218, title: "Museum Nasional Indonesia (Museum Gajah)", desc: "Merupakan museum tertua dan terbesar di Asia Tenggara. Terkenal dengan ikon patung gajah perunggu di halaman depannya, museum ini menyimpan lebih dari 140.000 artefak sejarah.", image: "Mg.jpg" },
-                { lat: -6.1552, lng: 106.8465, title: "Aula Simfonia Jakarta", desc: "Gedung konser khusus musik klasik (concert hall) terbaik di Indonesia dengan kualitas akustik kelas dunia yang dirancang secara alami tanpa bantuan pengeras suara elektronik.", image: "Asj.jpg" },
+                { lat: -0.97096, lng: 100.36594, title: "Gunung Padang", desc: "Bukit kecil di pinggir laut. Terdapat Makam Siti Nurbaya serta panorama kota.", image: "Gp.jpg" },
+                { lat: -0.9599, lng: 100.3601, title: "China Town", desc: "Pusat berburu kuliner legendaris dan jajanan malam Padang.", image: "Ct.jpg" },
+                { lat: -0.9482, lng: 100.4287, title: "Bukit Nobita", desc: "Menawarkan pemandangan city light Kota Padang 360 derajat.", image: "Bn.jpg" },
+                { lat: -6.1759, lng: 106.8324, title: "Galeri Nasional", desc: "Tempat menyimpan ribuan koleksi karya seniman legendaris Indonesia.", image: "Gai.jpg" },
+                { lat: -6.1478, lng: 106.8407, title: "Art:1 New Museum", desc: "Seni kontemporer dan modern dalam bangunan minimalis estetik.", image: "art1.jpg" },
+                { lat: -6.1764, lng: 106.8218, title: "Museum Nasional", desc: "Museum tertua dengan ikon patung gajah perunggu.", image: "Mg.jpg" },
+                { lat: -6.1552, lng: 106.8465, title: "Aula Simfonia", desc: "Gedung konser akustik kelas dunia tanpa pengeras suara elektronik.", image: "Asj.jpg" },
                 { lat: -6.1901, lng: 106.8399, title: "Jakarta", desc: "Banyak destinasi disini yang bisa aku Jelajahi bareng kamu", image: "jakarta.jpg" },
-                { lat: -7.570579, lng: 110.816492, title: "Tumurun Private Museum", desc: "Tumurun Private Museum adalah salah satu museum seni privat paling eksklusif dan bergengsi di Indonesia, yang terletak di kota Surakarta (Solo), Jawa Tengah.", image: "tpm.jpg" },
-                { lat: -7.1662, lng: 107.4021, title: "Kawah Putih", desc: "Danau kawah vulkanik yang terletak di kawasan Ciwidey ini menyajikan lanskap alam yang sangat surealis dan eksotis. Warna air kawahnya yang putih kehijauan sering berubah.", image: "kp.jpg" },
-                { lat: -6.9175, lng: 107.6090, title: "Jalan Braga", desc: "Jalanan legendaris ini merupakan urat nadi yang membuat Bandung dijuluki Parijs van Java. Menyusuri Jalan Braga akan membawa Anda bernostalgia ke masa lalu.", image: "jb.jpg" },
-                { lat: -6.7806, lng: 107.6374, title: "Orchid Forest Cikole", desc: "Berada di kawasan pegunungan Lembang dengan udara yang sangat sejuk, tempat ini adalah surga ekowisata yang memadukan keindahan hutan pinus dengan konservasi anggrek.", image: "ofc.jpg" },
-                { lat: -6.9681, lng: 110.4275, title: "Kota Lama Semarang", desc: "Sering dijuluki (Little Netherlands), kawasan ini merupakan pusat perdagangan pada masa kolonial Belanda. Di sini berdiri puluhan bangunan megah abad ke-19.", image: "klm.jpg" },
-                { lat: -6.9841, lng: 110.4104, title: "Lawang Sewu", desc: "Berdiri megah di seberang Tugu Muda, bangunan berarsitektur Art Deco ini dulunya merupakan kantor pusat perusahaan kereta api swasta Belanda (NIS).", image: "ls.jpg" },
+                { lat: -7.570579, lng: 110.816492, title: "Tumurun Museum", desc: "Museum seni privat eksklusif di kota Surakarta (Solo).", image: "tpm.jpg" },
+                { lat: -7.1662, lng: 107.4021, title: "Kawah Putih", desc: "Danau kawah vulkanik yang sangat surealis dan eksotis.", image: "kp.jpg" },
+                { lat: -6.9175, lng: 107.6090, title: "Jalan Braga", desc: "Jalanan legendaris yang membuat Bandung dijuluki Parijs van Java.", image: "jb.jpg" },
+                { lat: -6.7806, lng: 107.6374, title: "Orchid Forest Cikole", desc: "Surga ekowisata yang memadukan hutan pinus dan anggrek.", image: "ofc.jpg" },
+                { lat: -6.9681, lng: 110.4275, title: "Kota Lama Semarang", desc: "Kawasan Little Netherlands dengan bangunan megah abad ke-19.", image: "klm.jpg" },
+                { lat: -6.9841, lng: 110.4104, title: "Lawang Sewu", desc: "Berdiri megah di seberang Tugu Muda dengan arsitektur Art Deco.", image: "ls.jpg" },
                 { lat: -7.024944, lng: 110.459866, title: "Putra Sukma Agung", desc: "Aku lagi kuliah disini, tunggu aku balik sayangg!!", image: "suk.jpeg" },
-                { lat: -7.8054, lng: 110.3644, title: "Keraton Ngayogyakarta Hadiningrat", desc: "Istana resmi Kesultanan Ngayogyakarta Hadiningrat ini merupakan pusat denyut nadi budaya Jawa yang masih hidup dan aktif hingga hari ini.", image: "knd.jpg" },
-                { lat: -7.8100, lng: 110.3592, title: "Kampung Wisata Taman Sari", desc: "Situs bersejarah yang dulunya merupakan taman pemandian pribadi bagi Sultan dan keluarga kerajaan ini menyuguhkan arsitektur yang sangat unik dengan perpaduan gaya Jawa dan Portugis.", image: "kwts.jpg" },
-                { lat: -7.7929, lng: 110.3660, title: "Jalan Malioboro", desc: "Jalan Malioboro adalah jantung pariwisata, budaya, dan pusat perbelanjaan paling ikonik di Kota Yogyakarta.", image: "jm.jpg" },
-                { lat: -4.5262, lng: 129.9042, title: "Banda Neira", desc: "Banda Neira adalah sebuah pulau kecil yang menjadi pusat administratif dan pariwisata di Kepulauan Banda, Maluku. Pernah menjadi tempat rebutan bangsa Eropa.", image: "Banda.jpg" }
+                { lat: -7.8054, lng: 110.3644, title: "Keraton Yogyakarta", desc: "Pusat denyut nadi budaya Jawa yang masih hidup.", image: "knd.jpg" },
+                { lat: -7.8100, lng: 110.3592, title: "Taman Sari", desc: "Pemandian pribadi keluarga kerajaan bergaya Jawa dan Portugis.", image: "kwts.jpg" },
+                { lat: -7.7929, lng: 110.3660, title: "Jalan Malioboro", desc: "Jantung pariwisata dan budaya ikonik Yogyakarta.", image: "jm.jpg" },
+                { lat: -4.5262, lng: 129.9042, title: "Banda Neira", desc: "Pulau kecil nan indah yang pernah jadi rebutan bangsa Eropa.", image: "Banda.jpg" }
             ];
 
             destinations.forEach(dest => {
@@ -359,53 +292,143 @@ document.addEventListener("DOMContentLoaded", function() {
                 `);
             });
         }
-
-        setTimeout(() => {
-            map.invalidateSize();
-        }, 200);
+        setTimeout(() => { map.invalidateSize(); }, 200);
     });
 
-    closeMapModal.addEventListener("click", () => {
-        mapModal.style.display = "none";
-    });
+    closeMapModal.addEventListener("click", () => { mapModal.style.display = "none"; });
+    mapModal.addEventListener("click", (e) => { if (e.target === mapModal) mapModal.style.display = "none"; });
 
-    mapModal.addEventListener("click", (e) => {
-        if (e.target === mapModal) {
-            mapModal.style.display = "none";
-        }
-    });
     // === FITUR TOGGLE SIDEBAR MOBILE (OFF-CANVAS) ===
     const toggleLeftBtn = document.getElementById("toggleLeftBtn");
     const toggleRightBtn = document.getElementById("toggleRightBtn");
-    const sidebarLeft = document.querySelector(".sidebar-left");
     const sidebarRight = document.querySelector(".sidebar-right");
-    const mobileOverlay = document.getElementById("mobileOverlay");
 
     if(toggleLeftBtn && toggleRightBtn) {
-        // Klik tombol garis tiga (Hamburger) buka menu Kiri
         toggleLeftBtn.addEventListener("click", () => {
             sidebarLeft.classList.add("active");
             mobileOverlay.classList.add("active");
         });
-
-        // Klik tombol dua orang (Grup) buka menu Kanan
         toggleRightBtn.addEventListener("click", () => {
             sidebarRight.classList.add("active");
             mobileOverlay.classList.add("active");
         });
-
-        // Klik area hitam transparan untuk menutup menu
         mobileOverlay.addEventListener("click", () => {
             sidebarLeft.classList.remove("active");
             sidebarRight.classList.remove("active");
             mobileOverlay.classList.remove("active");
         });
     }
-    // === FITUR BARU: KONTROL TOMBOL DARI NOTIFIKASI HP ===
+
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', function() { playTrack(); });
         navigator.mediaSession.setActionHandler('pause', function() { pauseTrack(); });
         navigator.mediaSession.setActionHandler('previoustrack', function() { prevTrack(); });
         navigator.mediaSession.setActionHandler('nexttrack', function() { nextTrack(); });
+    }
+
+    // === FITUR MODAL VIDEO (Tombol Haii Sayang) ===
+    const btnHaiSayang = document.getElementById("btnHaiSayang");
+    const videoModal = document.getElementById("videoModal");
+    const closeVideoModal = document.querySelector(".close-video-modal");
+    const myVideo = document.getElementById("myVideo");
+
+    if (btnHaiSayang) {
+        btnHaiSayang.addEventListener("click", () => {
+            videoModal.style.display = "flex";
+            myVideo.play(); 
+        });
+    }
+    if (closeVideoModal) {
+        closeVideoModal.addEventListener("click", () => {
+            videoModal.style.display = "none";
+            myVideo.pause(); 
+        });
+    }
+    if (videoModal) {
+        videoModal.addEventListener("click", (e) => {
+            if (e.target === videoModal) {
+                videoModal.style.display = "none";
+                myVideo.pause();
+            }
+        });
+    }
+
+    // === FITUR INTERAKSI MENU BARU (Home, Playlist, Liked, Search) ===
+    const btnHome = document.getElementById("btnHome");
+    const btnSearch = document.getElementById("btnSearch");
+    const btnSearchRight = document.getElementById("btnSearchRight");
+    const btnCreatePlaylist = document.getElementById("btnCreatePlaylist");
+    const btnLikedSongs = document.getElementById("btnLikedSongs");
+    const toastNotification = document.getElementById("toastNotification");
+    
+    const searchModal = document.getElementById("searchModal");
+    const closeSearchModal = document.querySelector(".close-search-modal");
+    const searchInput = document.getElementById("searchInput");
+    const mainContent = document.querySelector(".main-content");
+
+    function showToast(message) {
+        toastNotification.textContent = message;
+        toastNotification.classList.add("show");
+        setTimeout(() => { toastNotification.classList.remove("show"); }, 3000); 
+    }
+
+    if (btnHome) {
+        btnHome.addEventListener("click", (e) => {
+            e.preventDefault();
+            closeMobileMenu();
+            mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    if (btnCreatePlaylist) {
+        btnCreatePlaylist.addEventListener("click", (e) => {
+            e.preventDefault();
+            closeMobileMenu();
+            showToast("Fitur membuat playlist segera hadir! 🎵");
+        });
+    }
+
+    if (btnLikedSongs) {
+        btnLikedSongs.addEventListener("click", (e) => {
+            e.preventDefault();
+            closeMobileMenu();
+            showToast("Memuat lagu-lagu favorit Rara... ❤️");
+        });
+    }
+
+    // Tombol Search (Kiri dan Kanan)
+    function openSearch(e) {
+        e.preventDefault();
+        closeMobileMenu();
+        searchModal.style.display = "flex";
+        searchInput.focus(); 
+    }
+    if (btnSearch) btnSearch.addEventListener("click", openSearch);
+    if (btnSearchRight) btnSearchRight.addEventListener("click", openSearch);
+
+    // Pencarian Real-Time
+    if (searchInput) {
+        searchInput.addEventListener("keyup", function(e) {
+            const term = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll(".tracklist tbody tr");
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if(text.includes(term)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    }
+
+    if (closeSearchModal) {
+        closeSearchModal.addEventListener("click", () => { searchModal.style.display = "none"; });
+    }
+    if (searchModal) {
+        searchModal.addEventListener("click", (e) => {
+            if (e.target === searchModal) searchModal.style.display = "none";
+        });
     }
 });
