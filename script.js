@@ -100,6 +100,24 @@ document.addEventListener("DOMContentLoaded", function() {
         // Reset waktu dan progress bar ke 0
         trackProgress.style.width = "0%";
         timeCurrentEl.textContent = "0:00";
+
+        // === FITUR BARU: NOTIFIKASI HP (MEDIA SESSION API) ===
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: track.title,
+                artist: track.artist,
+                album: "Sukma & Asrarul Special Playlist",
+                artwork: [
+                    // Mengambil gambar dari playlist untuk ditampilkan di notif HP
+                    { src: track.cover, sizes: '96x96', type: 'image/png' },
+                    { src: track.cover, sizes: '128x128', type: 'image/png' },
+                    { src: track.cover, sizes: '192x192', type: 'image/png' },
+                    { src: track.cover, sizes: '256x256', type: 'image/png' },
+                    { src: track.cover, sizes: '384x384', type: 'image/png' },
+                    { src: track.cover, sizes: '512x512', type: 'image/png' }
+                ]
+            });
+        }
     }
 
     // Panggil lagu pertama saat dimuat
@@ -382,5 +400,12 @@ document.addEventListener("DOMContentLoaded", function() {
             sidebarRight.classList.remove("active");
             mobileOverlay.classList.remove("active");
         });
+    }
+    // === FITUR BARU: KONTROL TOMBOL DARI NOTIFIKASI HP ===
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', function() { playTrack(); });
+        navigator.mediaSession.setActionHandler('pause', function() { pauseTrack(); });
+        navigator.mediaSession.setActionHandler('previoustrack', function() { prevTrack(); });
+        navigator.mediaSession.setActionHandler('nexttrack', function() { nextTrack(); });
     }
 });
