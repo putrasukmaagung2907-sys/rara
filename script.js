@@ -182,7 +182,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const trackRows = document.querySelectorAll(".tracklist tbody tr");
     trackRows.forEach((row, index) => {
-        row.style.cursor = "pointer";
         row.addEventListener("click", function() {
             currentTrackIndex = index;
             loadTrack(currentTrackIndex);
