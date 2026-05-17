@@ -356,4 +356,31 @@ document.addEventListener("DOMContentLoaded", function() {
             mapModal.style.display = "none";
         }
     });
+    // === FITUR TOGGLE SIDEBAR MOBILE (OFF-CANVAS) ===
+    const toggleLeftBtn = document.getElementById("toggleLeftBtn");
+    const toggleRightBtn = document.getElementById("toggleRightBtn");
+    const sidebarLeft = document.querySelector(".sidebar-left");
+    const sidebarRight = document.querySelector(".sidebar-right");
+    const mobileOverlay = document.getElementById("mobileOverlay");
+
+    if(toggleLeftBtn && toggleRightBtn) {
+        // Klik tombol garis tiga (Hamburger) buka menu Kiri
+        toggleLeftBtn.addEventListener("click", () => {
+            sidebarLeft.classList.add("active");
+            mobileOverlay.classList.add("active");
+        });
+
+        // Klik tombol dua orang (Grup) buka menu Kanan
+        toggleRightBtn.addEventListener("click", () => {
+            sidebarRight.classList.add("active");
+            mobileOverlay.classList.add("active");
+        });
+
+        // Klik area hitam transparan untuk menutup menu
+        mobileOverlay.addEventListener("click", () => {
+            sidebarLeft.classList.remove("active");
+            sidebarRight.classList.remove("active");
+            mobileOverlay.classList.remove("active");
+        });
+    }
 });

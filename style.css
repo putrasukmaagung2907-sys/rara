@@ -1,12 +1,12 @@
 /* RESET & VARIABEL DASAR */
 :root {
     --bg-base: #000000;
-    --bg-main: #121212;
+    --bg-main: #000000;
     --bg-elevated: #242424;
     --text-base: #b3b3b3;
     --text-highlight: #ffffff;
     --primary-color: #1db954;
-    --gradient-top: #df3b2c; /* Warna merah header */
+    --gradient-top: #800000;
     --font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -102,7 +102,7 @@ button {
 
 .top-bar {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 16px 32px; position: sticky; top: 0; z-index: 10; background: rgb(19, 19, 19); 
+    padding: 16px 32px; position: sticky; top: 0; z-index: 10; background: rgba(0, 0, 0, 0.799); 
 }
 .nav-arrows button {
     background-color: rgba(0,0,0,0.7); color: white; width: 32px; height: 32px;
@@ -120,6 +120,30 @@ button {
 }
 .user-profile img { width: 28px; height: 28px; border-radius: 50%; }
 
+/* TOMBOL TOGGLE UNTUK MOBILE (Disembunyikan di Desktop) */
+.mobile-toggle-btn {
+    display: none;
+    color: white;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* OVERLAY MOBILE (Latar gelap saat menu terbuka) */
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
 /* Header Playlist */
 .playlist-header { display: flex; padding: 20px 32px 32px; align-items: flex-end; }
 .playlist-cover {
@@ -127,7 +151,7 @@ button {
     box-shadow: 0 4px 60px rgba(0,0,0,0.5); position: relative;
 }
 .blend-cover {
-    width: 100%; height: 100%; background-color: #3e2621; position: relative;
+    width: 100%; height: 100%; background-color: #1a1a1a; position: relative;
     overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;
 }
 .blend-cover .red-circle {
@@ -211,7 +235,7 @@ button {
 
 /* === PLAYER BAR BAWAH === */
 .player-bar {
-    grid-area: player; background-color: #181818; border-top: 1px solid #282828;
+    grid-area: player; background-color: #000000; border-top: 1px solid #282828;
     display: flex; justify-content: space-between; align-items: center; 
     padding: 0 16px; height: 90px; overflow: hidden; 
 }
@@ -257,7 +281,7 @@ button {
     display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.85); justify-content: center; align-items: center; flex-direction: column;
 }
-.modal-content { max-width: 80%; max-height: 70%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); animation: zoomIn 0.3s ease; object-fit: cover; }
+.modal-content { max-width: 80%; height: auto; max-height: 70vh; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); animation: zoomIn 0.3s ease; object-fit: contain; }
 #modalCaption { margin-top: 20px; color: white; font-size: 24px; font-weight: bold; letter-spacing: 1px; animation: zoomIn 0.3s ease; }
 
 .close-modal, .close-map-modal {
@@ -285,7 +309,6 @@ button {
    ========================================= */
 
 @media screen and (max-width: 768px) {
-    /* 1. Mengubah struktur menjadi vertikal (atas ke bawah) */
     body {
         overflow-y: auto; 
     }
@@ -294,21 +317,70 @@ button {
         display: flex;
         flex-direction: column;
         height: auto;
-        padding-bottom: 140px; /* Ruang agar konten tidak tertutup pemutar musik di bawah */
+        padding-bottom: 140px; 
     }
 
-    /* 2. Menu Kiri menjadi bagian paling atas */
+    /* TAMPILKAN TOMBOL TOGGLE HP */
+    .mobile-toggle-btn {
+        display: block;
+    }
+    .nav-arrows {
+        display: none; /* Sembunyikan tombol panah di HP agar tidak padat */
+    }
+    .top-bar {
+        padding: 15px;
+    }
+    .top-bar-right {
+        gap: 10px;
+    }
+    .user-profile span {
+        display: none; /* Sembunyikan teks "Enjoy your special playlist" di HP agar muat */
+    }
+    .upgrade-btn {
+        display: none; /* Sembunyikan tombol upgrade di HP */
+    }
+
+    /* OVERLAY AKTIF KETIKA MENU DIBUKA */
+    .mobile-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+
+    /* MENU KIRI MENJADI OFF-CANVAS (Melayang) */
     .sidebar-left {
-        width: 100%;
-        height: auto;
-        padding-bottom: 20px;
+        position: fixed;
+        top: 0;
+        left: -300px; /* Posisi awal disembunyikan ke luar kiri layar */
+        width: 260px;
+        height: 100vh;
+        z-index: 10005; /* Harus lebih tinggi dari overlay */
+        transition: left 0.3s ease;
+        padding-bottom: 120px;
     }
-    
+    .sidebar-left.active {
+        left: 0; /* Menu muncul saat tombol diklik */
+    }
     .playlist-list {
-        max-height: 250px; 
+        max-height: none; 
     }
 
-    /* 3. Konten Utama (Lagu) di tengah */
+    /* MENU KANAN MENJADI OFF-CANVAS (Melayang) */
+    .sidebar-right {
+        position: fixed;
+        top: 0;
+        right: -300px; /* Posisi awal disembunyikan ke luar kanan layar */
+        width: 260px;
+        height: 100vh;
+        z-index: 10005;
+        transition: right 0.3s ease;
+        padding-bottom: 120px;
+        border-left: none;
+    }
+    .sidebar-right.active {
+        right: 0; /* Menu muncul saat tombol diklik */
+    }
+
+    /* KONTEN UTAMA TETAP DI TENGAH PENUH */
     .main-content {
         width: 100%;
         overflow-y: visible; 
@@ -330,7 +402,6 @@ button {
         font-size: 40px; 
     }
 
-    /* Sembunyikan kolom "Album" & "Added By" di HP agar judul lagu muat */
     .tracklist th:nth-child(3),
     .tracklist td:nth-child(3),
     .tracklist th:nth-child(4),
@@ -338,15 +409,7 @@ button {
         display: none;
     }
 
-    /* 4. Menu Kanan (Couple Activity) pindah ke bawah daftar lagu */
-    .sidebar-right {
-        width: 100%;
-        border-left: none;
-        border-top: 1px solid #282828;
-        padding-bottom: 40px;
-    }
-
-    /* 5. Pemutar Musik Bawah (Menempel di layar) */
+    /* PEMUTAR MUSIK MENEMPEL DI BAWAH */
     .player-bar {
         position: fixed;
         bottom: 0;
@@ -372,16 +435,20 @@ button {
         display: none; 
     }
 
-    /* 6. Perbaiki ukuran Modal (Pop-up Peta & Gambar) */
+    /* UKURAN MODAL PETA & GAMBAR DI HP */
     #mapContainer {
         width: 95%;
-        height: 70%; /* Peta tetap butuh tinggi yang pasti agar bisa digeser */
+        height: 70%;
     }
-    
     .modal-content {
         width: 95%;
-        height: auto; /* Membiarkan gambar menyesuaikan rasio aslinya (tidak dipaksa potrait) */
-        max-height: 70vh; /* Mencegah gambar kebablasan jika aslinya memang sangat tinggi */
-        object-fit: contain; /* Memastikan seluruh bagian gambar terlihat utuh */
+        height: auto;
+        max-height: 70vh;
+        object-fit: contain;
+    }
+    .close-map-modal, .close-modal {
+        top: 10px;
+        right: 15px;
+        font-size: 40px;
     }
 }
