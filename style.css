@@ -102,7 +102,7 @@ button {
 
 .top-bar {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 16px 32px; position: sticky; top: 0; z-index: 10; background: rgba(0,0,0,0.1); 
+    padding: 16px 32px; position: sticky; top: 0; z-index: 10; background: rgb(19, 19, 19); 
 }
 .nav-arrows button {
     background-color: rgba(0,0,0,0.7); color: white; width: 32px; height: 32px;
@@ -110,8 +110,8 @@ button {
 }
 .top-bar-right { display: flex; align-items: center; gap: 15px; }
 .upgrade-btn {
-    border: 1px solid #fff; border-radius: 500px; padding: 8px 24px;
-    color: #fff; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; background: transparent;
+    border: 1px solid #fffdfd; border-radius: 500px; padding: 8px 24px;
+    color: #fff; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; background: #877a7a;
 }
 .user-profile {
     display: flex; align-items: center; background-color: rgba(0,0,0,0.7);
@@ -373,14 +373,15 @@ button {
     }
 
     /* 6. Perbaiki ukuran Modal (Pop-up Peta & Gambar) */
-    #mapContainer, .modal-content {
+    #mapContainer {
         width: 95%;
-        height: 70%;
+        height: 70%; /* Peta tetap butuh tinggi yang pasti agar bisa digeser */
     }
     
-    .close-map-modal, .close-modal {
-        top: 10px;
-        right: 15px;
-        font-size: 40px;
+    .modal-content {
+        width: 95%;
+        height: auto; /* Membiarkan gambar menyesuaikan rasio aslinya (tidak dipaksa potrait) */
+        max-height: 70vh; /* Mencegah gambar kebablasan jika aslinya memang sangat tinggi */
+        object-fit: contain; /* Memastikan seluruh bagian gambar terlihat utuh */
     }
 }
