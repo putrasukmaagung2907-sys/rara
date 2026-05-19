@@ -5,12 +5,17 @@
     --bg-elevated: #242424;
     --text-base: #b3b3b3;
     --text-highlight: #ffffff;
-    --primary-color: #1db954; /* Hijau Spotify */
-    --gradient-top: #800000; /* Merah Marun Gelap */
+    --primary-color: #1db954;
+    --gradient-top: #800000;
     --font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; /* Ini yang menghilangkan blok biru di HP */
+}
 body { font-family: var(--font-family); background-color: var(--bg-base); color: var(--text-base); overflow-x: hidden; }
 a { text-decoration: none; color: inherit; }
 button { background: none; border: none; color: inherit; cursor: pointer; font-family: inherit; }
@@ -72,7 +77,7 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
     padding: 16px 32px; position: sticky; top: 0; z-index: 10; background: rgba(0, 0, 0, 0.799); 
 }
 .nav-arrows button {
-    background-color: rgba(0,0,0,0.7); color: white; width: 32px; height: 32px;
+    background-color: rgba(0, 0, 0, 0.7); color: white; width: 32px; height: 32px;
     border-radius: 50%; margin-right: 10px; display: inline-flex; justify-content: center; align-items: center;
 }
 .top-bar-right { display: flex; align-items: center; gap: 15px; }
@@ -305,39 +310,45 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
         position: fixed; bottom: 0; left: 0; width: 100%; height: auto;
         flex-direction: column; padding: 10px 15px; gap: 12px; z-index: 9999;
     }
-    
-    /* FIX TATA LETAK NOW PLAYING AGAR KE KIRI */
     .now-playing { 
-        width: 100%; 
-        justify-content: flex-start; 
+    width: 100%; 
+    justify-content: flex-start; /* Mengubah susunan agar merapat ke kiri */
     }
+
     .now-playing .track-info {
-        margin-right: auto; 
-        text-align: left; 
-        overflow: hidden; 
+    margin-right: auto; /* Mendorong tombol love mentok ke ujung kanan */
+    text-align: left; /* Memastikan teks rata kiri sejajar dengan foto */
+    overflow: hidden; /* Mencegah teks keluar batas jika judul lagunya sangat panjang */
     }
-    
     .player-controls { width: 100%; }
     .right-controls { display: none; }
 
     #mapContainer { width: 95%; height: 70%; }
     .modal-content { width: 95%; height: auto; max-height: 70vh; object-fit: contain; }
     .close-map-modal, .close-modal, .close-video-modal, .close-search-modal { top: 10px; right: 15px; font-size: 40px; }
-    
-    /* PERBAIKAN ACTION BAR & TOAST DI HP */
+    /* =========================================
+       PERBAIKAN ACTION BAR & TOAST DI HP
+       ========================================= */
+       
+    /* 1. Merapikan tombol agar turun ke bawah dan tidak terpotong */
     .action-bar {
         padding: 15px 20px;
         gap: 15px; 
-        flex-wrap: wrap; 
+        flex-wrap: wrap; /* Kunci utamanya: mengizinkan elemen turun ke baris baru */
     }
     
     .action-right {
         margin-left: 0;
-        width: 100%; 
+        width: 100%; /* Memaksa bagian kanan turun ke baris kedua */
         justify-content: space-between;
         margin-top: 10px;
     }
 
-    .toast { bottom: 170px !important; }
-    .toast.show { bottom: 180px !important; }
+    /* 2. Menaikkan posisi notifikasi agar tidak tertutup pemutar musik HP */
+    .toast {
+        bottom: 170px !important; 
+    }
+    .toast.show {
+        bottom: 180px !important;
+    }
 }
