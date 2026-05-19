@@ -36,7 +36,11 @@ document.addEventListener("DOMContentLoaded", function() {
         { title: "Menceritakanmu", artist: "Batas Senja", cover: "batas.png", file: "Batas Senja.mp3" },
         { title: "Diri", artist: "Tulus", cover: "Tulus.png", file: "TULUS - Diri.mp3" },
         { title: "Blessed", artist: "Daniel Caesar", cover: "Daniel.png", file: "Blessed.mp3" },
-        { title: "Here With Me", artist: "d4vd", cover: "d4vd.png", file: "Here With Me.mp3" }
+        { title: "Nothing", artist: "Bruno Major", cover: "BM.png", file: "Nothing.mp3" },
+        { title: "Best Part (feat. H.E.R.)", artist: "Daniel Caesar, H.E.R.", cover: "DNC.png", file: "Best.mp3" },
+        { title: "Let me stay", artist: "Brian Rahmattio", cover: "Brian.png", file: "LMS.mp3" },
+        { title: "real love", artist: "Skyline", cover: "Skyline.png", file: "Skyline.mp3" },
+        { title: "Monolog", artist: "Pamungkas", cover: "Pamungkas.png", file: "Monolog.mp3" }
     ];
 
     let currentTrackIndex = 0;
