@@ -115,7 +115,7 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
 .playlist-title { font-size: 80px; font-weight: 900; line-height: 1; letter-spacing: -2px; margin: 10px 0; }
 .playlist-desc { color: #ffffffb3; font-size: 14px; margin-bottom: 10px; }
 .playlist-meta { display: flex; align-items: center; font-size: 14px; gap: 5px; }
-.spotify-icon { color: var(--primary-color); font-size: 20px; }
+.love-music-icon { color: var(--primary-color); font-size: 20px; }
 .playlist-meta span { color: #ffffffb3; }
 
 /* Action Bar */
