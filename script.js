@@ -520,6 +520,34 @@ document.addEventListener("DOMContentLoaded", function() {
             this.innerHTML = `${newOrderText} <i class="fa-solid fa-caret-down"></i>`;
             
             showToast(`Mengurutkan berdasarkan: ${newOrderText} 🔄`);
+        // === FITUR WAKE LOCK (Mencegah Layar Mati) ===
+    let wakeLock = null;
+
+    async function requestWakeLock() {
+        try {
+            if ('wakeLock' in navigator) {
+                wakeLock = await navigator.wakeLock.request('screen');
+                console.log('Layar akan tetap menyala demi ayang.');
+            }
+        } catch (err) {
+            console.error(`Wake Lock error: ${err.name}, ${err.message}`);
+        }
+    }
+
+    // Panggil fungsi ini saat tombol play dipencet
+    mainPlayBtn.addEventListener("click", () => {
+        if (!isPlaying) requestWakeLock();
+    });
+    bottomPlayBtn.addEventListener("click", () => {
+        if (!isPlaying) requestWakeLock();
+    });
+
+    // Lepaskan wake lock jika tab disembunyikan untuk hemat baterai
+    document.addEventListener('visibilitychange', async () => {
+        if (wakeLock !== null && document.visibilityState === 'visible') {
+            requestWakeLock();
+        }
+    });
         });
     }
 });
