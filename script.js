@@ -406,6 +406,55 @@ document.addEventListener("DOMContentLoaded", function() {
             canvas.width = sidebarRight.clientWidth;
             canvas.height = 150; 
             initTulips(); 
+
+        // Tambahkan variabel ini di bagian atas fungsi initTulips atau dekat animateField
+    let lastTime = 0;
+    const fps = 30; // Batasi animasi ke 30 FPS agar HP tidak berat
+    const interval = 1000 / fps;
+
+    function animateField(timestamp) {
+        requestAnimationFrame(animateField);
+        
+        // Pembatas frame agar HP tidak "ngos-ngosan"
+        const elapsed = timestamp - lastTime;
+        if (elapsed > interval) {
+            lastTime = timestamp - (elapsed % interval);
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            globalTime += 0.04; 
+            const ps = 3; 
+            const rootY = canvas.height; 
+            
+            // Render Rumput (Batch)
+            ctx.beginPath(); ctx.strokeStyle = "#169443"; ctx.lineWidth = 2;
+            grassBlades.forEach(b => {
+                ctx.moveTo(b.x, rootY);
+                ctx.lineTo(b.x + Math.sin(globalTime + b.phase) * b.swayMax, rootY - b.height);
+            });
+            ctx.stroke();
+
+            // Render Batang & Bunga (Batch)
+            tulips.forEach(t => {
+                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                const tx = t.baseX + sway, ty = rootY - t.stemHeight;
+                
+                // Batang
+                ctx.beginPath(); ctx.strokeStyle = tulipColorStem; ctx.lineWidth = ps;
+                ctx.moveTo(t.baseX, rootY); ctx.quadraticCurveTo(t.baseX, ty + t.stemHeight/2, tx, ty); ctx.stroke();
+                
+                // Bunga Biru (dioptimasi jadi lebih simpel tapi tetap cantik)
+                ctx.fillStyle = tulipColorPrimary; 
+                ctx.fillRect(tx-6, ty-6, 12, 6); // Kelopak tengah
+                ctx.fillStyle = tulipColorDark; 
+                ctx.fillRect(tx-6, ty-2, 12, 2); // Dasar kelopak
+                ctx.fillRect(tx-6, ty-9, 3, 3); ctx.fillRect(tx-1, ty-9, 3, 3); ctx.fillRect(tx+3, ty-9, 3, 3); // Kuncup atas
+            });
+        }
+    }
+    
+    // Panggil animateField(0) untuk memulai
+    animateField(0);
+    
         }
         
         class GrassBlade {
