@@ -73,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function() {
         trackProgress.style.width = "0%";
         timeCurrentEl.textContent = "0:00";
 
-        // Fitur Media Session (Layar Kunci HP)
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: track.title,
@@ -88,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    loadTrack(currentTrackIndex); // Muat saat pertama dibuka
+    loadTrack(currentTrackIndex);
 
     function playTrack() {
         audioPlayer.play();
@@ -210,9 +209,10 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // === DEKLARASI SIDEBAR UNTUK MENU & MODAL ===
+    // === DEKLARASI SIDEBAR ===
     const sidebarLeft = document.querySelector(".sidebar-left");
     const mobileOverlay = document.getElementById("mobileOverlay");
+    const sidebarRight = document.querySelector(".sidebar-right");
 
     function closeMobileMenu() {
         if (sidebarLeft && sidebarLeft.classList.contains("active")) {
@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // === FITUR MODAL GAMBAR UNTUK LIST FAVORIT ===
+    // === FITUR MODAL GAMBAR FAVORIT ===
     const favoritesList = document.querySelectorAll("#favoritesList li:not(.nav-header)");
     const imageModal = document.getElementById("imageModal");
     const modalImage = document.getElementById("modalImage");
@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function() {
     closeModal.addEventListener("click", () => { imageModal.style.display = "none"; });
     imageModal.addEventListener("click", (e) => { if (e.target === imageModal) imageModal.style.display = "none"; });
 
-    // === FITUR PETA DESTINASI COUPLE ===
+    // === FITUR PETA ===
     const btnDestination = document.getElementById("btnDestination");
     const mapModal = document.getElementById("mapModal");
     const closeMapModal = document.querySelector(".close-map-modal");
@@ -274,27 +274,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
             const destinations = [
                 { lat: -0.9525, lng: 100.3524, title: "Taplau", desc: "Singkatan dari Tapi Lauik, pantai ini berada tepat di jantung kota. 🏖️", image: "Taplau.jpg" },
-                { lat: -0.95525, lng: 100.355833, title: "Museum Adityawarman", desc: "Taman Mini-nya Sumatera Barat. Bangunan utamanya berbentuk Rumah Gadang.", image: "Museum.jpg" },
-                { lat: -0.9390573, lng: 100.4538228, title: "Asrarul Fajriah", desc: "Wanita cantik dengan panggilan rara tinggal disini", image: "rr1.png" },
-                { lat: -0.97096, lng: 100.36594, title: "Gunung Padang", desc: "Bukit kecil di pinggir laut. Terdapat Makam Siti Nurbaya serta panorama kota.", image: "Gp.jpg" },
-                { lat: -0.9599, lng: 100.3601, title: "China Town", desc: "Pusat berburu kuliner legendaris dan jajanan malam Padang.", image: "Ct.jpg" },
-                { lat: -0.9482, lng: 100.4287, title: "Bukit Nobita", desc: "Menawarkan pemandangan city light Kota Padang 360 derajat.", image: "Bn.jpg" },
-                { lat: -6.1759, lng: 106.8324, title: "Galeri Nasional", desc: "Tempat menyimpan ribuan koleksi karya seniman legendaris Indonesia.", image: "Gai.jpg" },
-                { lat: -6.1478, lng: 106.8407, title: "Art:1 New Museum", desc: "Seni kontemporer dan modern dalam bangunan minimalis estetik.", image: "art1.jpg" },
-                { lat: -6.1764, lng: 106.8218, title: "Museum Nasional", desc: "Museum tertua dengan ikon patung gajah perunggu.", image: "Mg.jpg" },
-                { lat: -6.1552, lng: 106.8465, title: "Aula Simfonia", desc: "Gedung konser akustik kelas dunia tanpa pengeras suara elektronik.", image: "Asj.jpg" },
-                { lat: -6.1901, lng: 106.8399, title: "Jakarta", desc: "Banyak destinasi disini yang bisa aku Jelajahi bareng kamu", image: "jakarta.jpg" },
-                { lat: -7.570579, lng: 110.816492, title: "Tumurun Museum", desc: "Museum seni privat eksklusif di kota Surakarta (Solo).", image: "tpm.jpg" },
-                { lat: -7.1662, lng: 107.4021, title: "Kawah Putih", desc: "Danau kawah vulkanik yang sangat surealis dan eksotis.", image: "kp.jpg" },
-                { lat: -6.9175, lng: 107.6090, title: "Jalan Braga", desc: "Jalanan legendaris yang membuat Bandung dijuluki Parijs van Java.", image: "jb.jpg" },
-                { lat: -6.7806, lng: 107.6374, title: "Orchid Forest Cikole", desc: "Surga ekowisata yang memadukan hutan pinus dan anggrek.", image: "ofc.jpg" },
-                { lat: -6.9681, lng: 110.4275, title: "Kota Lama Semarang", desc: "Kawasan Little Netherlands dengan bangunan megah abad ke-19.", image: "klm.jpg" },
-                { lat: -6.9841, lng: 110.4104, title: "Lawang Sewu", desc: "Berdiri megah di seberang Tugu Muda dengan arsitektur Art Deco.", image: "ls.jpg" },
-                { lat: -7.024944, lng: 110.459866, title: "Putra Sukma Agung", desc: "Aku lagi kuliah disini, tunggu aku balik sayangg!!", image: "suk.jpeg" },
-                { lat: -7.8054, lng: 110.3644, title: "Keraton Yogyakarta", desc: "Pusat denyut nadi budaya Jawa yang masih hidup.", image: "knd.jpg" },
-                { lat: -7.8100, lng: 110.3592, title: "Taman Sari", desc: "Pemandian pribadi keluarga kerajaan bergaya Jawa dan Portugis.", image: "kwts.jpg" },
-                { lat: -7.7929, lng: 110.3660, title: "Jalan Malioboro", desc: "Jantung pariwisata dan budaya ikonik Yogyakarta.", image: "jm.jpg" },
-                { lat: -4.5262, lng: 129.9042, title: "Banda Neira", desc: "Pulau kecil nan indah yang pernah jadi rebutan bangsa Eropa.", image: "Banda.jpg" }
+                { lat: -6.9841, lng: 110.4104, title: "Lawang Sewu", desc: "Berdiri megah di seberang Tugu Muda.", image: "ls.jpg" },
+                { lat: -7.024944, lng: 110.459866, title: "Putra Sukma Agung", desc: "Aku lagi kuliah disini, tunggu aku balik sayangg!!", image: "suk.jpeg" }
             ];
 
             destinations.forEach(dest => {
@@ -317,10 +298,9 @@ document.addEventListener("DOMContentLoaded", function() {
     closeMapModal.addEventListener("click", () => { mapModal.style.display = "none"; });
     mapModal.addEventListener("click", (e) => { if (e.target === mapModal) mapModal.style.display = "none"; });
 
-    // === FITUR TOGGLE SIDEBAR MOBILE ===
+    // === FITUR SIDEBAR MOBILE ===
     const toggleLeftBtn = document.getElementById("toggleLeftBtn");
     const toggleRightBtn = document.getElementById("toggleRightBtn");
-    const sidebarRight = document.querySelector(".sidebar-right");
 
     if(toggleLeftBtn && toggleRightBtn) {
         toggleLeftBtn.addEventListener("click", () => {
@@ -338,341 +318,132 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('play', function() { playTrack(); });
-        navigator.mediaSession.setActionHandler('pause', function() { pauseTrack(); });
-        navigator.mediaSession.setActionHandler('previoustrack', function() { prevTrack(); });
-        navigator.mediaSession.setActionHandler('nexttrack', function() { nextTrack(); });
-    }
-
-    // === FITUR MODAL VIDEO ===
-    const btnHaiSayang = document.getElementById("btnHaiSayang");
-    const videoModal = document.getElementById("videoModal");
-    const closeVideoModal = document.querySelector(".close-video-modal");
-    const myVideo = document.getElementById("myVideo");
-    
-    let wasMusicPlaying = false; 
-
-    if (btnHaiSayang) {
-        btnHaiSayang.addEventListener("click", () => {
-            wasMusicPlaying = isPlaying; 
-            if (isPlaying) { pauseTrack(); }
-            videoModal.style.display = "flex";
-            myVideo.play(); 
-        });
-    }
-
-    function closeVideoAndResumeMusic() {
-        videoModal.style.display = "none";
-        myVideo.pause(); 
-        if (wasMusicPlaying) { playTrack(); }
-    }
-
-    if (closeVideoModal) { closeVideoModal.addEventListener("click", closeVideoAndResumeMusic); }
-    if (videoModal) {
-        videoModal.addEventListener("click", (e) => {
-            if (e.target === videoModal) { closeVideoAndResumeMusic(); }
-        });
-    }
-
-    // === FITUR INTERAKSI MENU BARU ===
-    const btnHome = document.getElementById("btnHome");
-    const btnSearch = document.getElementById("btnSearch");
-    const btnSearchRight = document.getElementById("btnSearchRight");
-    const btnCreatePlaylist = document.getElementById("btnCreatePlaylist");
-    const btnLikedSongs = document.getElementById("btnLikedSongs");
-    const toastNotification = document.getElementById("toastNotification");
-    
-    const searchModal = document.getElementById("searchModal");
-    const closeSearchModal = document.querySelector(".close-search-modal");
-    const searchInput = document.getElementById("searchInput");
-    const mainContent = document.querySelector(".main-content");
-
-    function showToast(message) {
-        toastNotification.textContent = message;
-        toastNotification.classList.add("show");
-        setTimeout(() => { toastNotification.classList.remove("show"); }, 3000); 
-    }
-
-    if (btnHome) {
-        btnHome.addEventListener("click", (e) => {
-            e.preventDefault();
-            closeMobileMenu();
-            mainContent.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
-
-    if (btnCreatePlaylist) {
-        btnCreatePlaylist.addEventListener("click", (e) => {
-            e.preventDefault();
-            closeMobileMenu();
-            showToast("Fitur membuat playlist segera hadir! 🎵");
-        });
-    }
-
-    if (btnLikedSongs) {
-        btnLikedSongs.addEventListener("click", (e) => {
-            e.preventDefault();
-            closeMobileMenu();
-            showToast("Memuat lagu-lagu favorit Rara... ❤️");
-        });
-    }
-
-    function openSearch(e) {
-        e.preventDefault();
-        closeMobileMenu();
-        searchModal.style.display = "flex";
-        searchInput.focus(); 
-    }
-    if (btnSearch) btnSearch.addEventListener("click", openSearch);
-    if (btnSearchRight) btnSearchRight.addEventListener("click", openSearch);
-
-    if (searchInput) {
-        searchInput.addEventListener("keyup", function(e) {
-            const term = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll(".tracklist tbody tr");
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                if(text.includes(term)) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
-            });
-        });
-    }
-
-    if (closeSearchModal) { closeSearchModal.addEventListener("click", () => { searchModal.style.display = "none"; }); }
-    if (searchModal) {
-        searchModal.addEventListener("click", (e) => {
-            if (e.target === searchModal) searchModal.style.display = "none";
-        });
-    }
-
-    // === FITUR INTERAKSI ACTION BAR ===
-    const btnActionHeart = document.getElementById("btnActionHeart");
-    const btnActionDownload = document.getElementById("btnActionDownload");
-    const btnActionMore = document.getElementById("btnActionMore");
-    const btnCustomOrder = document.getElementById("btnCustomOrder");
-
-    if (btnActionHeart) {
-        btnActionHeart.addEventListener("click", function() {
-            const icon = this.querySelector("i");
-            if (icon.classList.contains("fa-regular")) {
-                icon.classList.replace("fa-regular", "fa-solid");
-                this.style.color = "var(--primary-color)"; 
-                showToast("Playlist ditambahkan ke Favorit! 💚");
-            } else {
-                icon.classList.replace("fa-solid", "fa-regular");
-                this.style.color = ""; 
-                showToast("Playlist dihapus dari Favorit 💔");
-            }
-        });
-    }
-
-    if (btnActionDownload) {
-        btnActionDownload.addEventListener("click", function() {
-            if (this.style.color !== "var(--primary-color)") {
-                this.style.color = "var(--primary-color)";
-                showToast("Mengunduh playlist... 📥");
-            } else {
-                this.style.color = "";
-                showToast("Hapus unduhan playlist. 🗑️");
-            }
-        });
-    }
-
-    if (btnActionMore) {
-        btnActionMore.addEventListener("click", function() {
-            showToast("Membuka menu opsi lainnya... ⚙️");
-        });
-    }
-    
-    if (btnCustomOrder) {
-        const orderTypes = ["Custom order", "Title", "Artist", "Album"];
-        let currentOrderIndex = 0;
-
-        btnCustomOrder.addEventListener("click", function() {
-            currentOrderIndex++;
-            if (currentOrderIndex >= orderTypes.length) {
-                currentOrderIndex = 0;
-            }
-            const newOrderText = orderTypes[currentOrderIndex];
-            this.innerHTML = `${newOrderText} <i class="fa-solid fa-caret-down"></i>`;
-            showToast(`Mengurutkan berdasarkan: ${newOrderText} 🔄`);
-        });
-    }
-
-    // === FITUR WAKE LOCK ===
-    let wakeLock = null;
-
-    async function requestWakeLock() {
-        try {
-            if ('wakeLock' in navigator) {
-                wakeLock = await navigator.wakeLock.request('screen');
-                console.log('Layar akan tetap menyala demi ayang.');
-            }
-        } catch (err) {
-            console.error(`Wake Lock error: ${err.name}, ${err.message}`);
-        }
-    }
-
-    mainPlayBtn.addEventListener("click", () => {
-        if (!isPlaying) requestWakeLock();
-    });
-    bottomPlayBtn.addEventListener("click", () => {
-        if (!isPlaying) requestWakeLock();
-    });
-
-    document.addEventListener('visibilitychange', async () => {
-        if (wakeLock !== null && document.visibilityState === 'visible') {
-            requestWakeLock();
-        }
-    });
-
-    // ======================================================
-    // === ANIMASI PADANG TULIP BERGOYANG (SWAYING FIELD) ===
-    // ======================================================
-    
+    // === ANIMASI PADANG TULIP (VERSI FINAL) ===
     const canvas = document.getElementById("tulipCanvas");
-    const ctx = canvas.getContext("2d");
-    
-    let tulips = [];
-    let grassBlades = []; // Array penampung helai rumput dasar
-    
-    // Warna aset tanaman khusus (Batang/Daun Hijau, Bunga Pink)
-    const tulipColorStem = "#1db954";    
-    const tulipColorPrimary = "#624aef"; 
-    const tulipColorDark = "#2418c9";    
-    
-    // Fungsi untuk menyesuaikan ukuran canvas
-    function resizeCanvas() {
-        if(!sidebarRight || !canvas) return; 
-        canvas.width = sidebarRight.clientWidth;
-        canvas.height = sidebarRight.scrollHeight; 
-        initTulips(); 
-    }
-    
-    // Class untuk Helai Rumput Dasar
-    class GrassBlade {
-        constructor(x) {
-            this.x = x;
-            this.height = 6 + Math.random() * 8;       // Tinggi rumput pendek semak
-            this.phase = x * 0.04;                     // Jeda ayunan angin horizontal
-            this.swayMax = 3 + Math.random() * 3;      // Batas kelenturan goyangan rumput
+    if (canvas) {
+        const ctx = canvas.getContext("2d");
+        let tulips = [];
+        let grassBlades = []; 
+        const tulipColorStem = "#1db954";    
+        const tulipColorPrimary = "#4c4cd8"; 
+        const tulipColorDark = "#1f1389";    
+        
+        function resizeCanvas() {
+            if(!sidebarRight || !canvas) return; 
+            canvas.width = sidebarRight.clientWidth;
+            canvas.height = sidebarRight.clientHeight; 
+            initTulips(); 
         }
-        draw(time) {
-            const sway = Math.sin(time + this.phase) * this.swayMax;
+        
+        sidebarRight.addEventListener("scroll", function() {
+            canvas.style.top = sidebarRight.scrollTop + "px";
+        });
+        
+        class GrassBlade {
+            constructor(x) {
+                this.x = x;
+                this.height = 10 + Math.random() * 12;     
+                this.phase = x * 0.04;                     
+                this.swayMax = 3 + Math.random() * 3;      
+            }
+        }
+
+        class TulipField {
+            constructor(x, height) {
+                this.baseX = x;                     
+                this.stemHeight = height;           
+                this.phase = x * 0.015;             
+                this.swayMax = 10 + Math.random() * 8; 
+            }
+        }
+        
+        function initTulips() {
+            tulips = [];
+            grassBlades = [];
+            const tulipSpacing = 13; 
+            const count = Math.floor(canvas.width / tulipSpacing); 
+            for (let i = 0; i < count; i++) {
+                const x = (i * tulipSpacing) + (Math.random() * 5); 
+                const height = 55 + Math.random() * 25; 
+                tulips.push(new TulipField(x, height));
+            }
+            for (let x = 0; x < canvas.width; x += 4) {
+                grassBlades.push(new GrassBlade(x));
+            }
+        }
+        
+        let globalTime = 0;
+        function animateField() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            globalTime += 0.02; 
+            const ps = 3; 
+            const rootY = canvas.height + 5; 
+            
             ctx.beginPath();
-            ctx.moveTo(this.x, canvas.height);
-            ctx.lineTo(this.x + sway, canvas.height - this.height);
-            ctx.strokeStyle = "#169443"; // Hijau rumput sedikit kontras
+            ctx.strokeStyle = "#169443";
             ctx.lineWidth = 2;
+            grassBlades.forEach(blade => {
+                const sway = Math.sin(globalTime + blade.phase) * blade.swayMax;
+                ctx.moveTo(blade.x, rootY);
+                ctx.lineTo(blade.x + sway, rootY - blade.height);
+            });
             ctx.stroke();
-        }
-    }
 
-    // Class untuk Padang Bunga
-    class TulipField {
-        constructor(x, height) {
-            this.baseX = x;                     
-            this.baseY = canvas.height;         
-            this.stemHeight = height;           
-            this.pixelSize = 3;                 
-            
-            this.phase = x * 0.015;             
-            this.swayMax = 10 + Math.random() * 8; 
-        }
-        
-        draw(time) {
-            const sway = Math.sin(time + this.phase) * this.swayMax;
-            const tipX = this.baseX + sway;
-            const tipY = this.baseY - this.stemHeight;
-            
-            // 1. Gambar Batang Melengkung
             ctx.beginPath();
-            ctx.moveTo(this.baseX, this.baseY);
-            ctx.quadraticCurveTo(this.baseX, tipY + this.stemHeight / 2, tipX, tipY);
             ctx.strokeStyle = tulipColorStem;
-            ctx.lineWidth = this.pixelSize;
+            ctx.lineWidth = ps;
+            tulips.forEach(t => {
+                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                const tipX = t.baseX + sway;
+                const tipY = rootY - t.stemHeight;
+                ctx.moveTo(t.baseX, rootY);
+                ctx.quadraticCurveTo(t.baseX, tipY + t.stemHeight / 2, tipX, tipY);
+            });
             ctx.stroke();
-            
-            const ps = this.pixelSize;
 
-            // 2. Tambahan Tangkai Daun (Tumbuh di 40% tinggi batang)
-            const midX = this.baseX + sway * 0.4;
-            const midY = this.baseY - this.stemHeight * 0.7;
+            ctx.beginPath();
             ctx.fillStyle = tulipColorStem;
-            
-            // Daun Kiri (melengkung pixel ke atas-kiri)
-            ctx.fillRect(midX - ps, midY, ps, ps);
-            ctx.fillRect(midX - ps * 2, midY - ps, ps, ps);
-            
-            // Daun Kanan (melengkung pixel ke atas-kanan, tidak simetris agar alami)
-            ctx.fillRect(midX + ps, midY - ps * 0.5, ps, ps);
-            ctx.fillRect(midX + ps * 2, midY - ps * 1.5, ps, ps);
-            
-            // 3. Gambar Kuncup Bunga Tulip
-            // Bagian bawah bunga (Agak gelap)
+            tulips.forEach(t => {
+                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                const midX = t.baseX + sway * 0.4;
+                const midY = rootY - t.stemHeight * 0.7;
+                ctx.rect(midX - ps, midY, ps, ps);
+                ctx.rect(midX - ps * 2, midY - ps, ps, ps);
+                ctx.rect(midX + ps, midY - ps * 0.5, ps, ps);
+                ctx.rect(midX + ps * 2, midY - ps * 1.5, ps, ps);
+            });
+            ctx.fill();
+
+            ctx.beginPath();
             ctx.fillStyle = tulipColorDark;
-            ctx.fillRect(tipX - ps * 1.5, tipY, ps * 3, ps);
-            
-            // Bagian tengah bunga (Lebar & Terang)
+            tulips.forEach(t => {
+                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                const tipX = t.baseX + sway;
+                const tipY = rootY - t.stemHeight;
+                ctx.rect(tipX - ps * 1.5, tipY, ps * 3, ps);
+            });
+            ctx.fill();
+
+            ctx.beginPath();
             ctx.fillStyle = tulipColorPrimary;
-            ctx.fillRect(tipX - ps * 2.5, tipY - ps * 2, ps * 5, ps * 2);
+            tulips.forEach(t => {
+                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                const tipX = t.baseX + sway;
+                const tipY = rootY - t.stemHeight;
+                ctx.rect(tipX - ps * 2.5, tipY - ps * 2, ps * 5, ps * 2);
+                ctx.rect(tipX - ps * 2.5, tipY - ps * 3, ps, ps);
+                ctx.rect(tipX - ps * 0.5, tipY - ps * 3, ps, ps);
+                ctx.rect(tipX + ps * 1.5, tipY - ps * 3, ps, ps);
+            });
+            ctx.fill();
             
-            // 3 Ujung Kelopak Bunga khas Tulip Art
-            ctx.fillRect(tipX - ps * 2.5, tipY - ps * 3, ps, ps); // Kiri
-            ctx.fillRect(tipX - ps * 0.5, tipY - ps * 3, ps, ps); // Tengah
-            ctx.fillRect(tipX + ps * 1.5, tipY - ps * 3, ps, ps); // Kanan
+            requestAnimationFrame(animateField);
         }
-    }
-    
-    // Tanam bunga dan rumput berjejer secara prosedural
-    function initTulips() {
-        tulips = [];
-        grassBlades = [];
         
-        // Inisialisasi Tulip
-        const spacing = 15; 
-        const count = Math.floor(canvas.width / spacing); 
-        for (let i = 0; i < count; i++) {
-            const x = (i * spacing) + (Math.random() * 4); 
-            const height = 45 + Math.random() * 45; 
-            tulips.push(new TulipField(x, height));
-        }
-
-        // Inisialisasi Rumput (Rapat tiap 4px sepanjang batas bawah)
-        for (let x = 0; x < canvas.width; x += 4) {
-            grassBlades.push(new GrassBlade(x));
-        }
+        setTimeout(() => {
+            resizeCanvas();
+            animateField();
+        }, 100);
+        window.addEventListener("resize", resizeCanvas);
     }
-    
-    // Loop Animasi Render
-    let globalTime = 0;
-    function animateField() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        globalTime += 0.02; // Kecepatan tiupan angin sepoi-sepoi
-        
-        // Render hamparan rumput di background bawah terlebih dahulu
-        grassBlades.forEach(blade => {
-            blade.draw(globalTime);
-        });
-
-        // Render batang, daun, dan bunga tulip di lapisan depannya
-        tulips.forEach(tulip => {
-            tulip.draw(globalTime);
-        });
-        
-        requestAnimationFrame(animateField);
-    }
-    
-    setTimeout(() => {
-        resizeCanvas();
-        animateField();
-    }, 100);
-    
-    window.addEventListener("resize", resizeCanvas);
-
 });
