@@ -178,12 +178,13 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
 
 #tulipCanvas {
     position: absolute;
-    top: 0; 
+    bottom: 0;
     left: 0;
     width: 100%;
-    z-index: 1;
+    height: 100%;
+    z-index: 1; /* Menaruh animasi di lapisan belakang teks */
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.5; /* Agak transparan agar nyaman dibaca */
 }
 
 .friend-activity-header { display: flex; justify-content: space-between; align-items: center; color: var(--text-highlight); margin-bottom: 20px; }
