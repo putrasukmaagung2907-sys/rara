@@ -11,7 +11,7 @@
 }
 
 html, body {
-    overflow-x: hidden; /* Mengunci total geseran kanan/kiri */
+    overflow-x: hidden; 
     max-width: 100vw;
     margin: 0; padding: 0;
 }
@@ -23,7 +23,13 @@ html, body {
     -webkit-tap-highlight-color: transparent; 
 }
 body { font-family: var(--font-family); background-color: var(--bg-base); color: var(--text-base); }
-body.no-scroll { overflow: hidden; /* Menahan scroll layar utama saat menu samping terbuka */ }
+
+/* PENGUNCI LAYAR UTAMA SAAT MENU HP TERBUKA */
+body.no-scroll { 
+    overflow: hidden !important; 
+    height: 100vh !important;
+}
+
 a { text-decoration: none; color: inherit; }
 button { background: none; border: none; color: inherit; cursor: pointer; font-family: inherit; }
 
@@ -147,19 +153,17 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
 .action-right .icon-btn { font-size: 16px; }
 .custom-order { font-size: 14px; font-weight: bold; color: #ffffffb3; cursor: pointer; }
 
-/* Tracklist Table (Sudah dikunci lebar maksimumnya) */
+/* Tracklist Table */
 .tracklist-container { padding: 0 32px; }
 .tracklist { 
     width: 100%; border-collapse: collapse; text-align: left; 
-    table-layout: fixed; /* Mencegah tabel merusak batas layar ke kanan */
+    table-layout: fixed; 
 }
 .tracklist th {
     color: var(--text-base); font-size: 12px; font-weight: normal; letter-spacing: 1px;
     padding: 5px 15px; border-bottom: 1px solid #282828;
 }
 .tracklist td { padding: 10px 15px; font-size: 14px; vertical-align: middle; }
-
-/* Ukuran kolom terkontrol */
 .tracklist th:nth-child(1), .tracklist td:nth-child(1) { width: 50px; }
 .tracklist th:nth-child(2), .tracklist td:nth-child(2) { width: auto; }
 .tracklist th:nth-child(3), .tracklist td:nth-child(3) { width: 25%; }
@@ -186,20 +190,20 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
 .sidebar-right {
     grid-area: right; 
     background-color: var(--bg-base); 
-    padding: 0; /* Padding dipindah ke wrapper dalam */
+    padding: 0; 
     display: flex; 
     flex-direction: column; 
     border-left: 1px solid #282828; 
-    overflow: hidden; /* Sidebar utama diam mutlak */
+    overflow: hidden; 
     position: relative; 
 }
 .sidebar-scroll-wrapper {
     width: 100%;
     height: 100%;
-    overflow-y: auto; /* Hanya teks ini yang bisa di-scroll */
+    overflow-y: auto; 
     padding: 20px;
     position: relative;
-    z-index: 2; /* Memastikan teks ada di depan bunga */
+    z-index: 2; 
 }
 
 #tulipCanvas {
@@ -208,7 +212,7 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
     left: 0;
     width: 100%;
     height: 150px;
-    z-index: 1; /* Bunga ada di belakang teks tapi diam di dasar */
+    z-index: 1; 
     pointer-events: none;
     opacity: 0.5;
 }
@@ -396,16 +400,20 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
 
     .mobile-overlay.active { display: block; opacity: 1; }
 
+    /* PERBAIKAN SIDEBAR: Tinggi 100% dan mengunci overscroll */
     .sidebar-left {
-        position: fixed; top: 0; left: -300px; width: 260px; height: 100vh;
-        z-index: 10005; transition: left 0.3s ease; padding-bottom: 120px;
+        position: fixed; top: 0; left: -300px; width: 260px; height: 100%;
+        z-index: 10005; transition: left 0.3s ease; padding-bottom: 100px;
+        overflow-y: auto; overscroll-behavior-y: contain;
     }
     .sidebar-left.active { left: 0; }
     .playlist-list { max-height: none; }
 
+    /* PERBAIKAN SIDEBAR: Tinggi 100% dan mengunci overscroll */
     .sidebar-right {
-        position: fixed; top: 0; right: -300px; width: 260px; height: 100vh;
-        z-index: 10005; transition: right 0.3s ease; padding-bottom: 120px; border-left: none;
+        position: fixed; top: 0; right: -300px; width: 260px; height: 100%;
+        z-index: 10005; transition: right 0.3s ease; padding-bottom: 100px; border-left: none;
+        overflow-y: auto; overscroll-behavior-y: contain;
     }
     .sidebar-right.active { right: 0; }
 
@@ -414,7 +422,6 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
     .playlist-cover { margin-right: 0; margin-bottom: 20px; }
     .playlist-title { font-size: 40px; }
 
-    /* Menyembunyikan kolom ekstra di HP tanpa merusak lebar */
     .tracklist th:nth-child(3), .tracklist td:nth-child(3),
     .tracklist th:nth-child(4), .tracklist td:nth-child(4),
     .tracklist th:nth-child(5), .tracklist td:nth-child(5) { display: none; }

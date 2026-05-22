@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
         { title: "Diri", artist: "Tulus", cover: "Tulus.png", file: "TULUS - Diri.mp3" },
         { title: "Blessed", artist: "Daniel Caesar", cover: "Daniel.png", file: "Blessed.mp3" },
         { title: "Nothing", artist: "Bruno Major", cover: "BM.png", file: "Nothing.mp3" },
-        { title: "Best Part (feat. H.E.R.)", artist: "Daniel Caesar, H.E.R.", cover: "DNC.png", file: "Best.mp3" },
+        { title: "Best Part", artist: "Daniel Caesar, H.E.R.", cover: "DNC.png", file: "Best.mp3" },
         { title: "Let me stay", artist: "Brian Rahmattio", cover: "Brian.png", file: "LMS.mp3" },
         { title: "real love", artist: "Skyline", cover: "Skyline.png", file: "Skyline.mp3" },
         { title: "Monolog", artist: "Pamungkas", cover: "Pamungkas.png", file: "Monolog.mp3" }
@@ -48,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function() {
     let isShuffle = false;
     let isRepeat = false;
 
-    // Elemen <audio> di latar belakang
     const audioPlayer = document.createElement("audio");
     audioPlayer.id = "audioPlayer";
     document.body.appendChild(audioPlayer);
@@ -82,16 +81,14 @@ document.addEventListener("DOMContentLoaded", function() {
     loadTrack(currentTrackIndex);
 
     function playTrack() {
-        audioPlayer.play();
-        isPlaying = true;
+        audioPlayer.play(); isPlaying = true;
         bottomIcon.classList.replace("fa-play", "fa-pause");
         mainIcon.classList.replace("fa-play", "fa-pause");
         playerCover.classList.add("is-spinning");
     }
 
     function pauseTrack() {
-        audioPlayer.pause();
-        isPlaying = false;
+        audioPlayer.pause(); isPlaying = false;
         bottomIcon.classList.replace("fa-pause", "fa-play");
         mainIcon.classList.replace("fa-pause", "fa-play");
         playerCover.classList.remove("is-spinning");
@@ -134,9 +131,7 @@ document.addEventListener("DOMContentLoaded", function() {
     heartBtn.addEventListener("click", () => { heartBtn.classList.toggle("heart-active"); });
 
     document.querySelectorAll(".tracklist tbody tr").forEach((row, index) => {
-        row.addEventListener("click", function() {
-            currentTrackIndex = index; loadTrack(currentTrackIndex); playTrack();
-        });
+        row.addEventListener("click", function() { currentTrackIndex = index; loadTrack(currentTrackIndex); playTrack(); });
     });
 
     audioPlayer.addEventListener("loadeddata", () => { timeTotalEl.textContent = formatTime(audioPlayer.duration); });
@@ -173,26 +168,25 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // === DEKLARASI SIDEBAR & PENGUNCI LAYAR ===
+    // === DEKLARASI SIDEBAR & PENGUNCI LAYAR UTAMA ===
     const sidebarLeft = document.querySelector(".sidebar-left");
     const sidebarRight = document.querySelector(".sidebar-right");
     const mobileOverlay = document.getElementById("mobileOverlay");
+    const toggleLeftBtn = document.getElementById("toggleLeftBtn");
+    const toggleRightBtn = document.getElementById("toggleRightBtn");
 
     function openMobileMenu(sidebarElement) {
         if(sidebarElement) sidebarElement.classList.add("active");
         if(mobileOverlay) mobileOverlay.classList.add("active");
-        document.body.classList.add("no-scroll"); // Mengunci layar utama
+        document.body.classList.add("no-scroll"); 
     }
 
     function closeMobileMenu() {
         if (sidebarLeft) sidebarLeft.classList.remove("active");
         if (sidebarRight) sidebarRight.classList.remove("active");
         if (mobileOverlay) mobileOverlay.classList.remove("active");
-        document.body.classList.remove("no-scroll"); // Membuka kunci layar utama
+        document.body.classList.remove("no-scroll"); 
     }
-
-    const toggleLeftBtn = document.getElementById("toggleLeftBtn");
-    const toggleRightBtn = document.getElementById("toggleRightBtn");
 
     if(toggleLeftBtn && toggleRightBtn) {
         toggleLeftBtn.addEventListener("click", () => openMobileMenu(sidebarLeft));
@@ -224,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function() {
             modalImage.onload = function() {
                 imageLoader.style.display = "none"; modalImage.style.display = "block"; modalCaption.style.display = "block";
             };
-            closeMobileMenu();
+            closeMobileMenu(); 
         });
     });
 
@@ -391,44 +385,60 @@ document.addEventListener("DOMContentLoaded", function() {
     bottomPlayBtn.addEventListener("click", () => { if (!isPlaying) requestWakeLock(); });
     document.addEventListener('visibilitychange', async () => { if (wakeLock !== null && document.visibilityState === 'visible') requestWakeLock(); });
 
-    // ======================================================
-    // === ANIMASI PADANG TULIP (VERSI FINAL - FIX POSISI) ===
-    // ======================================================
+    // ====================================================================
+    // === ANIMASI PADANG TULIP (VERSI CANTIK & SUPER RINGAN / BATCHED) ===
+    // ====================================================================
     const canvas = document.getElementById("tulipCanvas");
     
-    if (canvas) {
+    if (canvas && sidebarRight) {
         const ctx = canvas.getContext("2d");
         
         let tulips = [];
         let grassBlades = []; 
+        
+        // Warna Biru cantik
         const tulipColorStem = "#1db954";    
-        const tulipColorPrimary = "#52b2bf"; // Biru cantik
+        const tulipColorPrimary = "#52b2bf"; 
         const tulipColorDark = "#1e5b82";    
         
         function resizeCanvas() {
             if(!sidebarRight || !canvas) return; 
             canvas.width = sidebarRight.clientWidth;
-            canvas.height = 150; // Tinggi terkunci
+            canvas.height = 150; 
             initTulips(); 
         }
         
         class GrassBlade {
-            constructor(x) { this.x = x; this.height = 10 + Math.random() * 12; this.phase = x * 0.04; this.swayMax = 3 + Math.random() * 3; }
+            constructor(x) {
+                this.x = x;
+                this.height = 10 + Math.random() * 12;     
+                this.phase = x * 0.04;                     
+                this.swayMax = 3 + Math.random() * 3;      
+            }
         }
 
         class TulipField {
-            constructor(x, height) { this.baseX = x; this.stemHeight = height; this.phase = x * 0.015; this.swayMax = 10 + Math.random() * 8; }
+            constructor(x, height) {
+                this.baseX = x;                     
+                this.stemHeight = height;           
+                this.phase = x * 0.015;             
+                this.swayMax = 10 + Math.random() * 8; 
+            }
         }
         
         function initTulips() {
-            tulips = []; grassBlades = [];
-            const tulipSpacing = 10; const count = Math.floor(canvas.width / tulipSpacing); 
+            tulips = [];
+            grassBlades = [];
+            const tulipSpacing = 12; // Jarak pas agar ramai tapi ringan
+            const count = Math.floor(canvas.width / tulipSpacing); 
             for (let i = 0; i < count; i++) {
                 const x = (i * tulipSpacing) + (Math.random() * 5); 
-                const height = 55 + Math.random() * 50; 
+                const height = 45 + Math.random() * 45; 
                 tulips.push(new TulipField(x, height));
             }
-            for (let x = 0; x < canvas.width; x += 4) { grassBlades.push(new GrassBlade(x)); }
+            for (let x = 0; x < canvas.width; x += 4) {
+                grassBlades.push(new GrassBlade(x));
+            }
         }
         
         let globalTime = 0;
@@ -436,49 +446,65 @@ document.addEventListener("DOMContentLoaded", function() {
         function animateField() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             globalTime += 0.02; 
-            const ps = 3; 
+            const ps = 3; // Ukuran Pixel
             const rootY = canvas.height; 
             
-            // Rumput
-            ctx.beginPath(); ctx.strokeStyle = "#169443"; ctx.lineWidth = 2;
+            // 1. RENDER RUMPUT SEKALI JALAN
+            ctx.beginPath();
+            ctx.strokeStyle = "#169443";
+            ctx.lineWidth = 2;
             grassBlades.forEach(blade => {
-                ctx.moveTo(blade.x, rootY); ctx.lineTo(blade.x + Math.sin(globalTime + blade.phase) * blade.swayMax, rootY - blade.height);
+                const sway = Math.sin(globalTime + blade.phase) * blade.swayMax;
+                ctx.moveTo(blade.x, rootY);
+                ctx.lineTo(blade.x + sway, rootY - blade.height);
             });
             ctx.stroke();
 
-            // Batang
-            ctx.beginPath(); ctx.strokeStyle = tulipColorStem; ctx.lineWidth = ps;
+            // 2. RENDER BATANG TULIP SEKALI JALAN
+            ctx.beginPath();
+            ctx.strokeStyle = tulipColorStem;
+            ctx.lineWidth = ps;
             tulips.forEach(t => {
                 const sway = Math.sin(globalTime + t.phase) * t.swayMax;
-                const tipX = t.baseX + sway, tipY = rootY - t.stemHeight;
-                ctx.moveTo(t.baseX, rootY); ctx.quadraticCurveTo(t.baseX, tipY + t.stemHeight / 2, tipX, tipY);
+                const tipX = t.baseX + sway;
+                const tipY = rootY - t.stemHeight;
+                ctx.moveTo(t.baseX, rootY);
+                ctx.quadraticCurveTo(t.baseX, tipY + t.stemHeight / 2, tipX, tipY);
             });
             ctx.stroke();
 
-            // Daun
-            ctx.beginPath(); ctx.fillStyle = tulipColorStem;
+            // 3. RENDER DAUN SEKALI JALAN
+            ctx.beginPath();
+            ctx.fillStyle = tulipColorStem;
             tulips.forEach(t => {
                 const sway = Math.sin(globalTime + t.phase) * t.swayMax;
-                const midX = t.baseX + sway * 0.4, midY = rootY - t.stemHeight * 0.4;
-                ctx.rect(midX - ps, midY, ps, ps); ctx.rect(midX - ps * 2, midY - ps, ps, ps);
-                ctx.rect(midX + ps, midY - ps * 0.5, ps, ps); ctx.rect(midX + ps * 2, midY - ps * 1.5, ps, ps);
+                const midX = t.baseX + sway * 0.4;
+                const midY = rootY - t.stemHeight * 0.4;
+                ctx.rect(midX - ps, midY, ps, ps);
+                ctx.rect(midX - ps * 2, midY - ps, ps, ps);
+                ctx.rect(midX + ps, midY - ps * 0.5, ps, ps);
+                ctx.rect(midX + ps * 2, midY - ps * 1.5, ps, ps);
             });
             ctx.fill();
 
-            // Kuncup Bawah
-            ctx.beginPath(); ctx.fillStyle = tulipColorDark;
+            // 4. RENDER KUNCUP DASAR SEKALI JALAN
+            ctx.beginPath();
+            ctx.fillStyle = tulipColorDark;
             tulips.forEach(t => {
                 const sway = Math.sin(globalTime + t.phase) * t.swayMax;
-                const tipX = t.baseX + sway, tipY = rootY - t.stemHeight;
+                const tipX = t.baseX + sway;
+                const tipY = rootY - t.stemHeight;
                 ctx.rect(tipX - ps * 1.5, tipY, ps * 3, ps);
             });
             ctx.fill();
 
-            // Kelopak Biru
-            ctx.beginPath(); ctx.fillStyle = tulipColorPrimary;
+            // 5. RENDER KELOPAK ATAS SEKALI JALAN
+            ctx.beginPath();
+            ctx.fillStyle = tulipColorPrimary;
             tulips.forEach(t => {
                 const sway = Math.sin(globalTime + t.phase) * t.swayMax;
-                const tipX = t.baseX + sway, tipY = rootY - t.stemHeight;
+                const tipX = t.baseX + sway;
+                const tipY = rootY - t.stemHeight;
                 ctx.rect(tipX - ps * 2.5, tipY - ps * 2, ps * 5, ps * 2); 
                 ctx.rect(tipX - ps * 2.5, tipY - ps * 3, ps, ps); 
                 ctx.rect(tipX - ps * 0.5, tipY - ps * 3, ps, ps); 
