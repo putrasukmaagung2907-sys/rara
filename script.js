@@ -398,8 +398,8 @@ document.addEventListener("DOMContentLoaded", function() {
         
         // Warna Biru cantik
         const tulipColorStem = "#1db954";    
-        const tulipColorPrimary = "#52b2bf"; 
-        const tulipColorDark = "#1e5b82";    
+        const tulipColorPrimary = "#362fba"; 
+        const tulipColorDark = "#000791";    
         
         function resizeCanvas() {
             if(!sidebarRight || !canvas) return; 
@@ -429,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function() {
         function initTulips() {
             tulips = [];
             grassBlades = [];
-            const tulipSpacing = 12; // Jarak pas agar ramai tapi ringan
+            const tulipSpacing = 25; // Jarak pas agar ramai tapi ringan
             const count = Math.floor(canvas.width / tulipSpacing); 
             for (let i = 0; i < count; i++) {
                 const x = (i * tulipSpacing) + (Math.random() * 5); 
@@ -479,7 +479,7 @@ document.addEventListener("DOMContentLoaded", function() {
             tulips.forEach(t => {
                 const sway = Math.sin(globalTime + t.phase) * t.swayMax;
                 const midX = t.baseX + sway * 0.4;
-                const midY = rootY - t.stemHeight * 0.4;
+                const midY = rootY - t.stemHeight * 0.7;
                 ctx.rect(midX - ps, midY, ps, ps);
                 ctx.rect(midX - ps * 2, midY - ps, ps, ps);
                 ctx.rect(midX + ps, midY - ps * 0.5, ps, ps);
