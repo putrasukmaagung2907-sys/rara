@@ -409,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Tambahkan variabel ini di bagian atas fungsi initTulips atau dekat animateField
     let lastTime = 0;
-    const fps = 30; // Batasi animasi ke 30 FPS agar HP tidak berat
+    const fps = 10; // Batasi animasi ke 30 FPS agar HP tidak berat
     const interval = 1000 / fps;
 
     function animateField(timestamp) {
@@ -454,7 +454,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Panggil animateField(0) untuk memulai
     animateField(0);
-    
+
         }
         
         class GrassBlade {
@@ -478,7 +478,7 @@ document.addEventListener("DOMContentLoaded", function() {
         function initTulips() {
             tulips = [];
             grassBlades = [];
-            const tulipSpacing = 25; // Jarak pas agar ramai tapi ringan
+            const tulipSpacing = 22; // Jarak pas agar ramai tapi ringan
             const count = Math.floor(canvas.width / tulipSpacing); 
             for (let i = 0; i < count; i++) {
                 const x = (i * tulipSpacing) + (Math.random() * 5); 
