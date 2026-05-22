@@ -5,25 +5,21 @@ document.addEventListener("DOMContentLoaded", function() {
     const mainPlayBtn = document.getElementById("mainPlayBtn");
     const mainIcon = mainPlayBtn.querySelector("i");
     
-    // Elemen Info Lagu Bawah
     const playerCover = document.querySelector(".now-playing img");
     const playerTitle = document.querySelector(".track-name");
     const playerArtist = document.querySelector(".track-artist");
 
-    // Elemen Waktu dan Progress Bar
     const timeCurrentEl = document.getElementById("timeCurrent");
     const timeTotalEl = document.getElementById("timeTotal");
     const trackProgressBar = document.getElementById("trackProgressBar");
     const trackProgress = document.getElementById("trackProgress");
 
-    // Elemen Kontrol Ekstra
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
     const shuffleBtn = document.getElementById("shuffleBtn");
     const repeatBtn = document.getElementById("repeatBtn");
     const heartBtn = document.getElementById("heartBtn");
 
-    // Elemen Volume
     const volumeProgressBar = document.getElementById("volumeProgressBar");
     const volumeProgress = document.getElementById("volumeProgress");
     const muteBtn = document.getElementById("muteBtn");
@@ -375,7 +371,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // === FITUR WAKE LOCK ===
     let wakeLock = null;
     async function requestWakeLock() {
         try { if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); console.log('Layar akan tetap menyala demi ayang.'); } } 
@@ -385,8 +380,9 @@ document.addEventListener("DOMContentLoaded", function() {
     bottomPlayBtn.addEventListener("click", () => { if (!isPlaying) requestWakeLock(); });
     document.addEventListener('visibilitychange', async () => { if (wakeLock !== null && document.visibilityState === 'visible') requestWakeLock(); });
 
+
     // ====================================================================
-    // === ANIMASI PADANG TULIP (VERSI CANTIK & SUPER RINGAN / BATCHED) ===
+    // === ANIMASI PADANG TULIP (VERSI HEMAT BATERAI + DAUN KEMBALI) ===
     // ====================================================================
     const canvas = document.getElementById("tulipCanvas");
     
@@ -396,176 +392,131 @@ document.addEventListener("DOMContentLoaded", function() {
         let tulips = [];
         let grassBlades = []; 
         
-        // Warna Biru cantik
         const tulipColorStem = "#1db954";    
-        const tulipColorPrimary = "#362fba"; 
-        const tulipColorDark = "#000791";    
+        const tulipColorPrimary = "#52b2bf"; // Biru cerah
+        const tulipColorDark = "#1e5b82";    // Biru gelap
         
+        // --- SISTEM PINTAR HEMAT BATERAI ---
+        let isAnimating = true; 
+
+        function checkVisibility() {
+            if (window.innerWidth <= 768) {
+                isAnimating = sidebarRight.classList.contains("active");
+            } else {
+                isAnimating = true;
+            }
+        }
+
         function resizeCanvas() {
             if(!sidebarRight || !canvas) return; 
             canvas.width = sidebarRight.clientWidth;
             canvas.height = 150; 
             initTulips(); 
-
-        // Tambahkan variabel ini di bagian atas fungsi initTulips atau dekat animateField
-    let lastTime = 0;
-    const fps = 10; // Batasi animasi ke 30 FPS agar HP tidak berat
-    const interval = 1000 / fps;
-
-    function animateField(timestamp) {
-        requestAnimationFrame(animateField);
-        
-        // Pembatas frame agar HP tidak "ngos-ngosan"
-        const elapsed = timestamp - lastTime;
-        if (elapsed > interval) {
-            lastTime = timestamp - (elapsed % interval);
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            globalTime += 0.04; 
-            const ps = 3; 
-            const rootY = canvas.height; 
-            
-            // Render Rumput (Batch)
-            ctx.beginPath(); ctx.strokeStyle = "#169443"; ctx.lineWidth = 2;
-            grassBlades.forEach(b => {
-                ctx.moveTo(b.x, rootY);
-                ctx.lineTo(b.x + Math.sin(globalTime + b.phase) * b.swayMax, rootY - b.height);
-            });
-            ctx.stroke();
-
-            // Render Batang & Bunga (Batch)
-            tulips.forEach(t => {
-                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
-                const tx = t.baseX + sway, ty = rootY - t.stemHeight;
-                
-                // Batang
-                ctx.beginPath(); ctx.strokeStyle = tulipColorStem; ctx.lineWidth = ps;
-                ctx.moveTo(t.baseX, rootY); ctx.quadraticCurveTo(t.baseX, ty + t.stemHeight/2, tx, ty); ctx.stroke();
-                
-                // Bunga Biru (dioptimasi jadi lebih simpel tapi tetap cantik)
-                ctx.fillStyle = tulipColorPrimary; 
-                ctx.fillRect(tx-6, ty-6, 12, 6); // Kelopak tengah
-                ctx.fillStyle = tulipColorDark; 
-                ctx.fillRect(tx-6, ty-2, 12, 2); // Dasar kelopak
-                ctx.fillRect(tx-6, ty-9, 3, 3); ctx.fillRect(tx-1, ty-9, 3, 3); ctx.fillRect(tx+3, ty-9, 3, 3); // Kuncup atas
-            });
+            checkVisibility(); 
         }
-    }
-    
-    // Panggil animateField(0) untuk memulai
-    animateField(0);
 
-        }
-        
         class GrassBlade {
             constructor(x) {
-                this.x = x;
-                this.height = 10 + Math.random() * 12;     
-                this.phase = x * 0.04;                     
-                this.swayMax = 3 + Math.random() * 3;      
+                this.x = x; this.height = 10 + Math.random() * 12;     
+                this.phase = x * 0.04; this.swayMax = 3 + Math.random() * 3;      
             }
         }
 
         class TulipField {
             constructor(x, height) {
-                this.baseX = x;                     
-                this.stemHeight = height;           
-                this.phase = x * 0.015;             
-                this.swayMax = 10 + Math.random() * 8; 
+                this.baseX = x; this.stemHeight = height;           
+                this.phase = x * 0.015; this.swayMax = 10 + Math.random() * 8; 
             }
         }
         
         function initTulips() {
-            tulips = [];
-            grassBlades = [];
-            const tulipSpacing = 22; // Jarak pas agar ramai tapi ringan
+            tulips = []; grassBlades = [];
+            const tulipSpacing = 22; 
             const count = Math.floor(canvas.width / tulipSpacing); 
             for (let i = 0; i < count; i++) {
                 const x = (i * tulipSpacing) + (Math.random() * 5); 
                 const height = 45 + Math.random() * 45; 
                 tulips.push(new TulipField(x, height));
             }
-            for (let x = 0; x < canvas.width; x += 4) {
-                grassBlades.push(new GrassBlade(x));
-            }
+            for (let x = 0; x < canvas.width; x += 4) { grassBlades.push(new GrassBlade(x)); }
         }
         
         let globalTime = 0;
+        let lastTime = 0;
+        const fps = 30; // 30 FPS Bikin super lancar dan ringan
+        const interval = 1000 / fps;
         
-        function animateField() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            globalTime += 0.02; 
-            const ps = 3; // Ukuran Pixel
-            const rootY = canvas.height; 
-            
-            // 1. RENDER RUMPUT SEKALI JALAN
-            ctx.beginPath();
-            ctx.strokeStyle = "#169443";
-            ctx.lineWidth = 2;
-            grassBlades.forEach(blade => {
-                const sway = Math.sin(globalTime + blade.phase) * blade.swayMax;
-                ctx.moveTo(blade.x, rootY);
-                ctx.lineTo(blade.x + sway, rootY - blade.height);
-            });
-            ctx.stroke();
+        function animateField(timestamp) {
+            if (!isAnimating) {
+                requestAnimationFrame(animateField);
+                return;
+            }
 
-            // 2. RENDER BATANG TULIP SEKALI JALAN
-            ctx.beginPath();
-            ctx.strokeStyle = tulipColorStem;
-            ctx.lineWidth = ps;
-            tulips.forEach(t => {
-                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
-                const tipX = t.baseX + sway;
-                const tipY = rootY - t.stemHeight;
-                ctx.moveTo(t.baseX, rootY);
-                ctx.quadraticCurveTo(t.baseX, tipY + t.stemHeight / 2, tipX, tipY);
-            });
-            ctx.stroke();
-
-            // 3. RENDER DAUN SEKALI JALAN
-            ctx.beginPath();
-            ctx.fillStyle = tulipColorStem;
-            tulips.forEach(t => {
-                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
-                const midX = t.baseX + sway * 0.4;
-                const midY = rootY - t.stemHeight * 0.7;
-                ctx.rect(midX - ps, midY, ps, ps);
-                ctx.rect(midX - ps * 2, midY - ps, ps, ps);
-                ctx.rect(midX + ps, midY - ps * 0.5, ps, ps);
-                ctx.rect(midX + ps * 2, midY - ps * 1.5, ps, ps);
-            });
-            ctx.fill();
-
-            // 4. RENDER KUNCUP DASAR SEKALI JALAN
-            ctx.beginPath();
-            ctx.fillStyle = tulipColorDark;
-            tulips.forEach(t => {
-                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
-                const tipX = t.baseX + sway;
-                const tipY = rootY - t.stemHeight;
-                ctx.rect(tipX - ps * 1.5, tipY, ps * 3, ps);
-            });
-            ctx.fill();
-
-            // 5. RENDER KELOPAK ATAS SEKALI JALAN
-            ctx.beginPath();
-            ctx.fillStyle = tulipColorPrimary;
-            tulips.forEach(t => {
-                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
-                const tipX = t.baseX + sway;
-                const tipY = rootY - t.stemHeight;
-                ctx.rect(tipX - ps * 2.5, tipY - ps * 2, ps * 5, ps * 2); 
-                ctx.rect(tipX - ps * 2.5, tipY - ps * 3, ps, ps); 
-                ctx.rect(tipX - ps * 0.5, tipY - ps * 3, ps, ps); 
-                ctx.rect(tipX + ps * 1.5, tipY - ps * 3, ps, ps); 
-            });
-            ctx.fill();
-            
             requestAnimationFrame(animateField);
+            
+            const elapsed = timestamp - lastTime;
+            if (elapsed > interval) {
+                lastTime = timestamp - (elapsed % interval);
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                globalTime += 0.04; 
+                const ps = 3; 
+                const rootY = canvas.height; 
+                
+                // 1. Render Rumput
+                ctx.beginPath(); ctx.strokeStyle = "#169443"; ctx.lineWidth = 2;
+                grassBlades.forEach(b => { ctx.moveTo(b.x, rootY); ctx.lineTo(b.x + Math.sin(globalTime + b.phase) * b.swayMax, rootY - b.height); });
+                ctx.stroke();
+
+                // 2. Render Batang
+                ctx.beginPath(); ctx.strokeStyle = tulipColorStem; ctx.lineWidth = ps;
+                tulips.forEach(t => {
+                    const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                    const tipX = t.baseX + sway, ty = rootY - t.stemHeight;
+                    ctx.moveTo(t.baseX, rootY); ctx.quadraticCurveTo(t.baseX, ty + t.stemHeight/2, tipX, ty); 
+                });
+                ctx.stroke();
+
+                // 3. Render Daun (INI YANG TADI HILANG)
+                ctx.beginPath(); ctx.fillStyle = tulipColorStem;
+                tulips.forEach(t => {
+                    const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                    const midX = t.baseX + sway * 0.4;
+                    const midY = rootY - t.stemHeight * 0.55; 
+                    ctx.rect(midX - ps, midY, ps, ps);
+                    ctx.rect(midX - ps * 2, midY - ps, ps, ps);
+                    ctx.rect(midX + ps, midY - ps * 0.5, ps, ps);
+                    ctx.rect(midX + ps * 2, midY - ps * 1.5, ps, ps);
+                });
+                ctx.fill();
+
+                // 4. Render Bunga Biru Cerah (Tengah + Atas)
+                ctx.beginPath(); ctx.fillStyle = tulipColorPrimary; 
+                tulips.forEach(t => {
+                    const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                    const tx = t.baseX + sway, ty = rootY - t.stemHeight;
+                    ctx.rect(tx-6, ty-6, 12, 6); 
+                    ctx.rect(tx-6, ty-9, 3, 3); ctx.rect(tx-1, ty-9, 3, 3); ctx.rect(tx+3, ty-9, 3, 3); 
+                });
+                ctx.fill();
+
+                // 5. Render Bunga Biru Gelap (Bawah/Dasar Kuncup)
+                ctx.beginPath(); ctx.fillStyle = tulipColorDark; 
+                tulips.forEach(t => {
+                    const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                    const tx = t.baseX + sway, ty = rootY - t.stemHeight;
+                    ctx.rect(tx-6, ty-2, 12, 2); 
+                });
+                ctx.fill();
+            }
         }
         
         window.addEventListener("resize", resizeCanvas);
+        
+        if (toggleRightBtn) toggleRightBtn.addEventListener("click", () => isAnimating = true);
+        if (mobileOverlay) mobileOverlay.addEventListener("click", checkVisibility);
+
         resizeCanvas();
-        animateField();
+        animateField(0);
     }
 });
