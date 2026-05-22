@@ -54,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.body.appendChild(audioPlayer);
     audioPlayer.volume = 1; 
 
-    // Bantuan Format Waktu
     function formatTime(seconds) {
         if (isNaN(seconds)) return "0:00";
         const min = Math.floor(seconds / 60);
@@ -69,26 +68,18 @@ document.addEventListener("DOMContentLoaded", function() {
         playerCover.src = track.cover;
         playerTitle.textContent = track.title;
         playerArtist.textContent = track.artist;
-        
         trackProgress.style.width = "0%";
         timeCurrentEl.textContent = "0:00";
 
-        // Fitur Media Session (Layar Kunci HP)
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: track.title,
-                artist: track.artist,
-                album: "Sukma & Asrarul Special Playlist",
-                artwork: [
-                    { src: track.cover, sizes: '96x96', type: 'image/png' },
-                    { src: track.cover, sizes: '256x256', type: 'image/png' },
-                    { src: track.cover, sizes: '512x512', type: 'image/png' }
-                ]
+                title: track.title, artist: track.artist, album: "Sukma & Asrarul Special Playlist",
+                artwork: [ { src: track.cover, sizes: '512x512', type: 'image/png' } ]
             });
         }
     }
 
-    loadTrack(currentTrackIndex); // Muat saat pertama dibuka
+    loadTrack(currentTrackIndex);
 
     function playTrack() {
         audioPlayer.play();
@@ -107,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function togglePlay() {
-        if (isPlaying) { pauseTrack(); } else {
+        if (isPlaying) pauseTrack(); else {
             if (!audioPlayer.src || audioPlayer.src === window.location.href) loadTrack(currentTrackIndex);
             playTrack();
         }
@@ -116,26 +107,20 @@ document.addEventListener("DOMContentLoaded", function() {
     function nextTrack() {
         if (isShuffle) {
             let randomIndex = currentTrackIndex;
-            while (randomIndex === currentTrackIndex && myPlaylist.length > 1) {
-                randomIndex = Math.floor(Math.random() * myPlaylist.length);
-            }
+            while (randomIndex === currentTrackIndex && myPlaylist.length > 1) { randomIndex = Math.floor(Math.random() * myPlaylist.length); }
             currentTrackIndex = randomIndex;
         } else {
             currentTrackIndex++;
             if (currentTrackIndex >= myPlaylist.length) currentTrackIndex = 0;
         }
-        loadTrack(currentTrackIndex);
-        playTrack();
+        loadTrack(currentTrackIndex); playTrack();
     }
 
     function prevTrack() {
-        if (audioPlayer.currentTime > 3) {
-            audioPlayer.currentTime = 0;
-        } else {
+        if (audioPlayer.currentTime > 3) { audioPlayer.currentTime = 0; } else {
             currentTrackIndex--;
             if (currentTrackIndex < 0) currentTrackIndex = myPlaylist.length - 1;
-            loadTrack(currentTrackIndex);
-            playTrack();
+            loadTrack(currentTrackIndex); playTrack();
         }
     }
 
@@ -144,81 +129,82 @@ document.addEventListener("DOMContentLoaded", function() {
     nextBtn.addEventListener("click", nextTrack);
     prevBtn.addEventListener("click", prevTrack);
 
-    shuffleBtn.addEventListener("click", () => {
-        isShuffle = !isShuffle;
-        shuffleBtn.classList.toggle("control-active", isShuffle);
-    });
-    repeatBtn.addEventListener("click", () => {
-        isRepeat = !isRepeat;
-        repeatBtn.classList.toggle("control-active", isRepeat);
-    });
-    heartBtn.addEventListener("click", () => {
-        heartBtn.classList.toggle("heart-active");
-    });
+    shuffleBtn.addEventListener("click", () => { isShuffle = !isShuffle; shuffleBtn.classList.toggle("control-active", isShuffle); });
+    repeatBtn.addEventListener("click", () => { isRepeat = !isRepeat; repeatBtn.classList.toggle("control-active", isRepeat); });
+    heartBtn.addEventListener("click", () => { heartBtn.classList.toggle("heart-active"); });
 
-    const trackRows = document.querySelectorAll(".tracklist tbody tr");
-    trackRows.forEach((row, index) => {
+    document.querySelectorAll(".tracklist tbody tr").forEach((row, index) => {
         row.addEventListener("click", function() {
-            currentTrackIndex = index;
-            loadTrack(currentTrackIndex);
-            playTrack();
+            currentTrackIndex = index; loadTrack(currentTrackIndex); playTrack();
         });
     });
 
     audioPlayer.addEventListener("loadeddata", () => { timeTotalEl.textContent = formatTime(audioPlayer.duration); });
     audioPlayer.addEventListener("timeupdate", () => {
-        const currentTime = audioPlayer.currentTime;
-        const duration = audioPlayer.duration;
+        const currentTime = audioPlayer.currentTime; const duration = audioPlayer.duration;
         timeCurrentEl.textContent = formatTime(currentTime);
-        if (duration) {
-            const progressPercent = (currentTime / duration) * 100;
-            trackProgress.style.width = `${progressPercent}%`;
-        }
+        if (duration) trackProgress.style.width = `${(currentTime / duration) * 100}%`;
     });
 
     trackProgressBar.addEventListener("click", (e) => {
-        const width = trackProgressBar.clientWidth;
-        const clickX = e.offsetX; 
-        const duration = audioPlayer.duration;
+        const width = trackProgressBar.clientWidth; const clickX = e.offsetX; const duration = audioPlayer.duration;
         if (duration) audioPlayer.currentTime = (clickX / width) * duration;
     });
 
     audioPlayer.addEventListener("ended", () => { if (isRepeat) { audioPlayer.currentTime = 0; playTrack(); } else { nextTrack(); } });
 
     volumeProgressBar.addEventListener("click", (e) => {
-        const width = volumeProgressBar.clientWidth;
-        let volume = e.offsetX / width;
+        const width = volumeProgressBar.clientWidth; let volume = e.offsetX / width;
         if (volume < 0) volume = 0; if (volume > 1) volume = 1;
-        audioPlayer.volume = volume;
-        volumeProgress.style.width = `${volume * 100}%`;
-        if (volume === 0) { muteIcon.className = "fa-solid fa-volume-xmark"; } 
-        else if (volume < 0.5) { muteIcon.className = "fa-solid fa-volume-low"; } 
-        else { muteIcon.className = "fa-solid fa-volume-high"; }
+        audioPlayer.volume = volume; volumeProgress.style.width = `${volume * 100}%`;
+        if (volume === 0) muteIcon.className = "fa-solid fa-volume-xmark"; 
+        else if (volume < 0.5) muteIcon.className = "fa-solid fa-volume-low"; 
+        else muteIcon.className = "fa-solid fa-volume-high";
     });
 
     let previousVolume = 1;
     muteBtn.addEventListener("click", () => {
         if (audioPlayer.volume > 0) {
-            previousVolume = audioPlayer.volume;
-            audioPlayer.volume = 0;
-            volumeProgress.style.width = "0%";
+            previousVolume = audioPlayer.volume; audioPlayer.volume = 0; volumeProgress.style.width = "0%";
             muteIcon.className = "fa-solid fa-volume-xmark";
         } else {
-            audioPlayer.volume = previousVolume;
-            volumeProgress.style.width = `${previousVolume * 100}%`;
+            audioPlayer.volume = previousVolume; volumeProgress.style.width = `${previousVolume * 100}%`;
             muteIcon.className = previousVolume < 0.5 ? "fa-solid fa-volume-low" : "fa-solid fa-volume-high";
         }
     });
 
-    // === DEKLARASI SIDEBAR UNTUK MENU & MODAL ===
+    // === DEKLARASI SIDEBAR & PENGUNCI LAYAR ===
     const sidebarLeft = document.querySelector(".sidebar-left");
+    const sidebarRight = document.querySelector(".sidebar-right");
     const mobileOverlay = document.getElementById("mobileOverlay");
 
+    function openMobileMenu(sidebarElement) {
+        if(sidebarElement) sidebarElement.classList.add("active");
+        if(mobileOverlay) mobileOverlay.classList.add("active");
+        document.body.classList.add("no-scroll"); // Mengunci layar utama
+    }
+
     function closeMobileMenu() {
-        if (sidebarLeft && sidebarLeft.classList.contains("active")) {
-            sidebarLeft.classList.remove("active");
-            mobileOverlay.classList.remove("active");
-        }
+        if (sidebarLeft) sidebarLeft.classList.remove("active");
+        if (sidebarRight) sidebarRight.classList.remove("active");
+        if (mobileOverlay) mobileOverlay.classList.remove("active");
+        document.body.classList.remove("no-scroll"); // Membuka kunci layar utama
+    }
+
+    const toggleLeftBtn = document.getElementById("toggleLeftBtn");
+    const toggleRightBtn = document.getElementById("toggleRightBtn");
+
+    if(toggleLeftBtn && toggleRightBtn) {
+        toggleLeftBtn.addEventListener("click", () => openMobileMenu(sidebarLeft));
+        toggleRightBtn.addEventListener("click", () => openMobileMenu(sidebarRight));
+        mobileOverlay.addEventListener("click", closeMobileMenu);
+    }
+
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', playTrack);
+        navigator.mediaSession.setActionHandler('pause', pauseTrack);
+        navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
+        navigator.mediaSession.setActionHandler('nexttrack', nextTrack);
     }
 
     // === FITUR MODAL GAMBAR UNTUK LIST FAVORIT ===
@@ -227,31 +213,17 @@ document.addEventListener("DOMContentLoaded", function() {
     const modalImage = document.getElementById("modalImage");
     const modalCaption = document.getElementById("modalCaption");
     const closeModal = document.querySelector(".close-modal");
-    
-    const imageLoader = document.getElementById("imageLoader"); // Elemen Loader
+    const imageLoader = document.getElementById("imageLoader");
 
     favoritesList.forEach(item => {
         item.addEventListener("click", function() {
-            const imageUrl = this.getAttribute("data-image");
-            const itemName = this.textContent;
-            
-            // Tampilkan modal dan animasi loading, sembunyikan foto & teks lama
-            imageModal.style.display = "flex";
-            imageLoader.style.display = "flex";
-            modalImage.style.display = "none";
-            modalCaption.style.display = "none";
-
-            // Atur URL gambar (browser mulai mendownload)
-            modalImage.src = imageUrl;
-            modalCaption.textContent = itemName;
-
-            // Tunggu sampai gambar selesai didownload
+            const imageUrl = this.getAttribute("data-image"); const itemName = this.textContent;
+            imageModal.style.display = "flex"; imageLoader.style.display = "flex";
+            modalImage.style.display = "none"; modalCaption.style.display = "none";
+            modalImage.src = imageUrl; modalCaption.textContent = itemName;
             modalImage.onload = function() {
-                imageLoader.style.display = "none";
-                modalImage.style.display = "block";
-                modalCaption.style.display = "block";
+                imageLoader.style.display = "none"; modalImage.style.display = "block"; modalCaption.style.display = "block";
             };
-
             closeMobileMenu();
         });
     });
@@ -259,22 +231,18 @@ document.addEventListener("DOMContentLoaded", function() {
     closeModal.addEventListener("click", () => { imageModal.style.display = "none"; });
     imageModal.addEventListener("click", (e) => { if (e.target === imageModal) imageModal.style.display = "none"; });
 
-    // === FITUR PETA DESTINASI COUPLE ===
+    // === FITUR PETA DESTINASI ===
     const btnDestination = document.getElementById("btnDestination");
     const mapModal = document.getElementById("mapModal");
     const closeMapModal = document.querySelector(".close-map-modal");
     let map; 
 
     btnDestination.addEventListener("click", function(e) {
-        e.preventDefault(); 
-        mapModal.style.display = "flex";
-        closeMobileMenu();
+        e.preventDefault(); mapModal.style.display = "flex"; closeMobileMenu();
 
         if (!map) {
             map = L.map('mapContainer').setView([-2.5489, 118.0149], 5);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
 
             const destinations = [
                 { lat: -0.9525, lng: 100.3524, title: "Taplau", desc: "Singkatan dari Tapi Lauik, pantai ini berada tepat di jantung kota. 🏖️", image: "Taplau.jpg" },
@@ -321,141 +289,63 @@ document.addEventListener("DOMContentLoaded", function() {
     closeMapModal.addEventListener("click", () => { mapModal.style.display = "none"; });
     mapModal.addEventListener("click", (e) => { if (e.target === mapModal) mapModal.style.display = "none"; });
 
-    // === FITUR TOGGLE SIDEBAR MOBILE (OFF-CANVAS) ===
-    const toggleLeftBtn = document.getElementById("toggleLeftBtn");
-    const toggleRightBtn = document.getElementById("toggleRightBtn");
-    const sidebarRight = document.querySelector(".sidebar-right");
-
-    if(toggleLeftBtn && toggleRightBtn) {
-        toggleLeftBtn.addEventListener("click", () => {
-            sidebarLeft.classList.add("active");
-            mobileOverlay.classList.add("active");
-        });
-        toggleRightBtn.addEventListener("click", () => {
-            sidebarRight.classList.add("active");
-            mobileOverlay.classList.add("active");
-        });
-        mobileOverlay.addEventListener("click", () => {
-            sidebarLeft.classList.remove("active");
-            sidebarRight.classList.remove("active");
-            mobileOverlay.classList.remove("active");
-        });
-    }
-
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('play', function() { playTrack(); });
-        navigator.mediaSession.setActionHandler('pause', function() { pauseTrack(); });
-        navigator.mediaSession.setActionHandler('previoustrack', function() { prevTrack(); });
-        navigator.mediaSession.setActionHandler('nexttrack', function() { nextTrack(); });
-    }
-
-    // === FITUR MODAL VIDEO (Tombol Haii Sayang) ===
+    // === FITUR MODAL VIDEO ===
     const btnHaiSayang = document.getElementById("btnHaiSayang");
     const videoModal = document.getElementById("videoModal");
     const closeVideoModal = document.querySelector(".close-video-modal");
     const myVideo = document.getElementById("myVideo");
-    
     let wasMusicPlaying = false; 
 
     if (btnHaiSayang) {
         btnHaiSayang.addEventListener("click", () => {
             wasMusicPlaying = isPlaying; 
-            if (isPlaying) { pauseTrack(); }
-            videoModal.style.display = "flex";
-            myVideo.play(); 
+            if (isPlaying) pauseTrack();
+            videoModal.style.display = "flex"; myVideo.play(); 
         });
     }
 
-    function closeVideoAndResumeMusic() {
-        videoModal.style.display = "none";
-        myVideo.pause(); 
-        if (wasMusicPlaying) { playTrack(); }
-    }
+    function closeVideoAndResumeMusic() { videoModal.style.display = "none"; myVideo.pause(); if (wasMusicPlaying) playTrack(); }
+    if (closeVideoModal) closeVideoModal.addEventListener("click", closeVideoAndResumeMusic);
+    if (videoModal) videoModal.addEventListener("click", (e) => { if (e.target === videoModal) closeVideoAndResumeMusic(); });
 
-    if (closeVideoModal) { closeVideoModal.addEventListener("click", closeVideoAndResumeMusic); }
-    if (videoModal) {
-        videoModal.addEventListener("click", (e) => {
-            if (e.target === videoModal) { closeVideoAndResumeMusic(); }
-        });
-    }
-
-    // === FITUR INTERAKSI MENU BARU (Home, Playlist, Liked, Search) ===
+    // === FITUR INTERAKSI MENU ===
     const btnHome = document.getElementById("btnHome");
     const btnSearch = document.getElementById("btnSearch");
     const btnSearchRight = document.getElementById("btnSearchRight");
     const btnCreatePlaylist = document.getElementById("btnCreatePlaylist");
     const btnLikedSongs = document.getElementById("btnLikedSongs");
     const toastNotification = document.getElementById("toastNotification");
-    
     const searchModal = document.getElementById("searchModal");
     const closeSearchModal = document.querySelector(".close-search-modal");
     const searchInput = document.getElementById("searchInput");
     const mainContent = document.querySelector(".main-content");
 
     function showToast(message) {
-        toastNotification.textContent = message;
-        toastNotification.classList.add("show");
+        toastNotification.textContent = message; toastNotification.classList.add("show");
         setTimeout(() => { toastNotification.classList.remove("show"); }, 3000); 
     }
 
-    if (btnHome) {
-        btnHome.addEventListener("click", (e) => {
-            e.preventDefault();
-            closeMobileMenu();
-            mainContent.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
+    if (btnHome) btnHome.addEventListener("click", (e) => { e.preventDefault(); closeMobileMenu(); mainContent.scrollTo({ top: 0, behavior: 'smooth' }); });
+    if (btnCreatePlaylist) btnCreatePlaylist.addEventListener("click", (e) => { e.preventDefault(); closeMobileMenu(); showToast("Fitur membuat playlist segera hadir! 🎵"); });
+    if (btnLikedSongs) btnLikedSongs.addEventListener("click", (e) => { e.preventDefault(); closeMobileMenu(); showToast("Memuat lagu-lagu favorit Rara... ❤️"); });
 
-    if (btnCreatePlaylist) {
-        btnCreatePlaylist.addEventListener("click", (e) => {
-            e.preventDefault();
-            closeMobileMenu();
-            showToast("Fitur membuat playlist segera hadir! 🎵");
-        });
-    }
-
-    if (btnLikedSongs) {
-        btnLikedSongs.addEventListener("click", (e) => {
-            e.preventDefault();
-            closeMobileMenu();
-            showToast("Memuat lagu-lagu favorit Rara... ❤️");
-        });
-    }
-
-    // Tombol Search
-    function openSearch(e) {
-        e.preventDefault();
-        closeMobileMenu();
-        searchModal.style.display = "flex";
-        searchInput.focus(); 
-    }
+    function openSearch(e) { e.preventDefault(); closeMobileMenu(); searchModal.style.display = "flex"; searchInput.focus(); }
     if (btnSearch) btnSearch.addEventListener("click", openSearch);
     if (btnSearchRight) btnSearchRight.addEventListener("click", openSearch);
 
     if (searchInput) {
         searchInput.addEventListener("keyup", function(e) {
             const term = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll(".tracklist tbody tr");
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                if(text.includes(term)) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
+            document.querySelectorAll(".tracklist tbody tr").forEach(row => {
+                if(row.textContent.toLowerCase().includes(term)) row.style.display = ""; else row.style.display = "none";
             });
         });
     }
 
-    if (closeSearchModal) { closeSearchModal.addEventListener("click", () => { searchModal.style.display = "none"; }); }
-    if (searchModal) {
-        searchModal.addEventListener("click", (e) => {
-            if (e.target === searchModal) searchModal.style.display = "none";
-        });
-    }
+    if (closeSearchModal) closeSearchModal.addEventListener("click", () => { searchModal.style.display = "none"; });
+    if (searchModal) searchModal.addEventListener("click", (e) => { if (e.target === searchModal) searchModal.style.display = "none"; });
 
-    // === FITUR INTERAKSI ACTION BAR (Tengah) ===
+    // === FITUR INTERAKSI ACTION BAR ===
     const btnActionHeart = document.getElementById("btnActionHeart");
     const btnActionDownload = document.getElementById("btnActionDownload");
     const btnActionMore = document.getElementById("btnActionMore");
@@ -465,75 +355,142 @@ document.addEventListener("DOMContentLoaded", function() {
         btnActionHeart.addEventListener("click", function() {
             const icon = this.querySelector("i");
             if (icon.classList.contains("fa-regular")) {
-                icon.classList.replace("fa-regular", "fa-solid");
-                this.style.color = "var(--primary-color)"; 
-                showToast("Playlist ditambahkan ke Favorit! 💚");
+                icon.classList.replace("fa-regular", "fa-solid"); this.style.color = "var(--primary-color)"; showToast("Playlist ditambahkan ke Favorit! 💚");
             } else {
-                icon.classList.replace("fa-solid", "fa-regular");
-                this.style.color = ""; 
-                showToast("Playlist dihapus dari Favorit 💔");
+                icon.classList.replace("fa-solid", "fa-regular"); this.style.color = ""; showToast("Playlist dihapus dari Favorit 💔");
             }
         });
     }
 
     if (btnActionDownload) {
         btnActionDownload.addEventListener("click", function() {
-            if (this.style.color !== "var(--primary-color)") {
-                this.style.color = "var(--primary-color)";
-                showToast("Mengunduh playlist... 📥");
-            } else {
-                this.style.color = "";
-                showToast("Hapus unduhan playlist. 🗑️");
-            }
+            if (this.style.color !== "var(--primary-color)") { this.style.color = "var(--primary-color)"; showToast("Mengunduh playlist... 📥"); } 
+            else { this.style.color = ""; showToast("Hapus unduhan playlist. 🗑️"); }
         });
     }
 
-    if (btnActionMore) {
-        btnActionMore.addEventListener("click", function() {
-            showToast("Membuka menu opsi lainnya... ⚙️");
-        });
-    }
+    if (btnActionMore) btnActionMore.addEventListener("click", () => showToast("Membuka menu opsi lainnya... ⚙️"));
     
     if (btnCustomOrder) {
-        const orderTypes = ["Custom order", "Title", "Artist", "Album"];
-        let currentOrderIndex = 0;
-
+        const orderTypes = ["Custom order", "Title", "Artist", "Album"]; let currentOrderIndex = 0;
         btnCustomOrder.addEventListener("click", function() {
-            currentOrderIndex++;
-            if (currentOrderIndex >= orderTypes.length) {
-                currentOrderIndex = 0;
-            }
+            currentOrderIndex++; if (currentOrderIndex >= orderTypes.length) currentOrderIndex = 0;
             const newOrderText = orderTypes[currentOrderIndex];
             this.innerHTML = `${newOrderText} <i class="fa-solid fa-caret-down"></i>`;
             showToast(`Mengurutkan berdasarkan: ${newOrderText} 🔄`);
         });
     }
 
-    // === FITUR WAKE LOCK (Mencegah Layar Mati) ===
+    // === FITUR WAKE LOCK ===
     let wakeLock = null;
-
     async function requestWakeLock() {
-        try {
-            if ('wakeLock' in navigator) {
-                wakeLock = await navigator.wakeLock.request('screen');
-                console.log('Layar akan tetap menyala demi ayang.');
-            }
-        } catch (err) {
-            console.error(`Wake Lock error: ${err.name}, ${err.message}`);
-        }
+        try { if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); console.log('Layar akan tetap menyala demi ayang.'); } } 
+        catch (err) { console.error(`Wake Lock error: ${err.name}, ${err.message}`); }
     }
+    mainPlayBtn.addEventListener("click", () => { if (!isPlaying) requestWakeLock(); });
+    bottomPlayBtn.addEventListener("click", () => { if (!isPlaying) requestWakeLock(); });
+    document.addEventListener('visibilitychange', async () => { if (wakeLock !== null && document.visibilityState === 'visible') requestWakeLock(); });
 
-    mainPlayBtn.addEventListener("click", () => {
-        if (!isPlaying) requestWakeLock();
-    });
-    bottomPlayBtn.addEventListener("click", () => {
-        if (!isPlaying) requestWakeLock();
-    });
-
-    document.addEventListener('visibilitychange', async () => {
-        if (wakeLock !== null && document.visibilityState === 'visible') {
-            requestWakeLock();
+    // ======================================================
+    // === ANIMASI PADANG TULIP (VERSI FINAL - FIX POSISI) ===
+    // ======================================================
+    const canvas = document.getElementById("tulipCanvas");
+    
+    if (canvas) {
+        const ctx = canvas.getContext("2d");
+        
+        let tulips = [];
+        let grassBlades = []; 
+        const tulipColorStem = "#1db954";    
+        const tulipColorPrimary = "#52b2bf"; // Biru cantik
+        const tulipColorDark = "#1e5b82";    
+        
+        function resizeCanvas() {
+            if(!sidebarRight || !canvas) return; 
+            canvas.width = sidebarRight.clientWidth;
+            canvas.height = 150; // Tinggi terkunci
+            initTulips(); 
         }
-    });
+        
+        class GrassBlade {
+            constructor(x) { this.x = x; this.height = 10 + Math.random() * 12; this.phase = x * 0.04; this.swayMax = 3 + Math.random() * 3; }
+        }
 
+        class TulipField {
+            constructor(x, height) { this.baseX = x; this.stemHeight = height; this.phase = x * 0.015; this.swayMax = 10 + Math.random() * 8; }
+        }
+        
+        function initTulips() {
+            tulips = []; grassBlades = [];
+            const tulipSpacing = 10; const count = Math.floor(canvas.width / tulipSpacing); 
+            for (let i = 0; i < count; i++) {
+                const x = (i * tulipSpacing) + (Math.random() * 5); 
+                const height = 55 + Math.random() * 50; 
+                tulips.push(new TulipField(x, height));
+            }
+            for (let x = 0; x < canvas.width; x += 4) { grassBlades.push(new GrassBlade(x)); }
+        }
+        
+        let globalTime = 0;
+        
+        function animateField() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            globalTime += 0.02; 
+            const ps = 3; 
+            const rootY = canvas.height; 
+            
+            // Rumput
+            ctx.beginPath(); ctx.strokeStyle = "#169443"; ctx.lineWidth = 2;
+            grassBlades.forEach(blade => {
+                ctx.moveTo(blade.x, rootY); ctx.lineTo(blade.x + Math.sin(globalTime + blade.phase) * blade.swayMax, rootY - blade.height);
+            });
+            ctx.stroke();
+
+            // Batang
+            ctx.beginPath(); ctx.strokeStyle = tulipColorStem; ctx.lineWidth = ps;
+            tulips.forEach(t => {
+                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                const tipX = t.baseX + sway, tipY = rootY - t.stemHeight;
+                ctx.moveTo(t.baseX, rootY); ctx.quadraticCurveTo(t.baseX, tipY + t.stemHeight / 2, tipX, tipY);
+            });
+            ctx.stroke();
+
+            // Daun
+            ctx.beginPath(); ctx.fillStyle = tulipColorStem;
+            tulips.forEach(t => {
+                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                const midX = t.baseX + sway * 0.4, midY = rootY - t.stemHeight * 0.4;
+                ctx.rect(midX - ps, midY, ps, ps); ctx.rect(midX - ps * 2, midY - ps, ps, ps);
+                ctx.rect(midX + ps, midY - ps * 0.5, ps, ps); ctx.rect(midX + ps * 2, midY - ps * 1.5, ps, ps);
+            });
+            ctx.fill();
+
+            // Kuncup Bawah
+            ctx.beginPath(); ctx.fillStyle = tulipColorDark;
+            tulips.forEach(t => {
+                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                const tipX = t.baseX + sway, tipY = rootY - t.stemHeight;
+                ctx.rect(tipX - ps * 1.5, tipY, ps * 3, ps);
+            });
+            ctx.fill();
+
+            // Kelopak Biru
+            ctx.beginPath(); ctx.fillStyle = tulipColorPrimary;
+            tulips.forEach(t => {
+                const sway = Math.sin(globalTime + t.phase) * t.swayMax;
+                const tipX = t.baseX + sway, tipY = rootY - t.stemHeight;
+                ctx.rect(tipX - ps * 2.5, tipY - ps * 2, ps * 5, ps * 2); 
+                ctx.rect(tipX - ps * 2.5, tipY - ps * 3, ps, ps); 
+                ctx.rect(tipX - ps * 0.5, tipY - ps * 3, ps, ps); 
+                ctx.rect(tipX + ps * 1.5, tipY - ps * 3, ps, ps); 
+            });
+            ctx.fill();
+            
+            requestAnimationFrame(animateField);
+        }
+        
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+        animateField();
+    }
 });
