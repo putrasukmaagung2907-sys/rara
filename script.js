@@ -227,25 +227,21 @@ document.addEventListener("DOMContentLoaded", function() {
     const modalImage = document.getElementById("modalImage");
     const modalCaption = document.getElementById("modalCaption");
     const closeModal = document.querySelector(".close-modal");
-    
-    const imageLoader = document.getElementById("imageLoader"); // Elemen Loader
+    const imageLoader = document.getElementById("imageLoader");
 
     favoritesList.forEach(item => {
         item.addEventListener("click", function() {
             const imageUrl = this.getAttribute("data-image");
             const itemName = this.textContent;
             
-            // Tampilkan modal dan animasi loading, sembunyikan foto & teks lama
             imageModal.style.display = "flex";
             imageLoader.style.display = "flex";
             modalImage.style.display = "none";
             modalCaption.style.display = "none";
 
-            // Atur URL gambar (browser mulai mendownload)
             modalImage.src = imageUrl;
             modalCaption.textContent = itemName;
 
-            // Tunggu sampai gambar selesai didownload
             modalImage.onload = function() {
                 imageLoader.style.display = "none";
                 modalImage.style.display = "block";
@@ -321,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function() {
     closeMapModal.addEventListener("click", () => { mapModal.style.display = "none"; });
     mapModal.addEventListener("click", (e) => { if (e.target === mapModal) mapModal.style.display = "none"; });
 
-    // === FITUR TOGGLE SIDEBAR MOBILE (OFF-CANVAS) ===
+    // === FITUR TOGGLE SIDEBAR MOBILE ===
     const toggleLeftBtn = document.getElementById("toggleLeftBtn");
     const toggleRightBtn = document.getElementById("toggleRightBtn");
     const sidebarRight = document.querySelector(".sidebar-right");
@@ -349,7 +345,7 @@ document.addEventListener("DOMContentLoaded", function() {
         navigator.mediaSession.setActionHandler('nexttrack', function() { nextTrack(); });
     }
 
-    // === FITUR MODAL VIDEO (Tombol Haii Sayang) ===
+    // === FITUR MODAL VIDEO ===
     const btnHaiSayang = document.getElementById("btnHaiSayang");
     const videoModal = document.getElementById("videoModal");
     const closeVideoModal = document.querySelector(".close-video-modal");
@@ -379,7 +375,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // === FITUR INTERAKSI MENU BARU (Home, Playlist, Liked, Search) ===
+    // === FITUR INTERAKSI MENU BARU ===
     const btnHome = document.getElementById("btnHome");
     const btnSearch = document.getElementById("btnSearch");
     const btnSearchRight = document.getElementById("btnSearchRight");
@@ -422,7 +418,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Tombol Search
     function openSearch(e) {
         e.preventDefault();
         closeMobileMenu();
@@ -455,7 +450,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // === FITUR INTERAKSI ACTION BAR (Tengah) ===
+    // === FITUR INTERAKSI ACTION BAR ===
     const btnActionHeart = document.getElementById("btnActionHeart");
     const btnActionDownload = document.getElementById("btnActionDownload");
     const btnActionMore = document.getElementById("btnActionMore");
@@ -509,7 +504,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // === FITUR WAKE LOCK (Mencegah Layar Mati) ===
+    // === FITUR WAKE LOCK ===
     let wakeLock = null;
 
     async function requestWakeLock() {
@@ -535,5 +530,149 @@ document.addEventListener("DOMContentLoaded", function() {
             requestWakeLock();
         }
     });
+
+    // ======================================================
+    // === ANIMASI PADANG TULIP BERGOYANG (SWAYING FIELD) ===
+    // ======================================================
+    
+    const canvas = document.getElementById("tulipCanvas");
+    const ctx = canvas.getContext("2d");
+    
+    let tulips = [];
+    let grassBlades = []; // Array penampung helai rumput dasar
+    
+    // Warna aset tanaman khusus (Batang/Daun Hijau, Bunga Pink)
+    const tulipColorStem = "#1db954";    
+    const tulipColorPrimary = "#624aef"; 
+    const tulipColorDark = "#2418c9";    
+    
+    // Fungsi untuk menyesuaikan ukuran canvas
+    function resizeCanvas() {
+        if(!sidebarRight || !canvas) return; 
+        canvas.width = sidebarRight.clientWidth;
+        canvas.height = sidebarRight.scrollHeight; 
+        initTulips(); 
+    }
+    
+    // Class untuk Helai Rumput Dasar
+    class GrassBlade {
+        constructor(x) {
+            this.x = x;
+            this.height = 6 + Math.random() * 8;       // Tinggi rumput pendek semak
+            this.phase = x * 0.04;                     // Jeda ayunan angin horizontal
+            this.swayMax = 3 + Math.random() * 3;      // Batas kelenturan goyangan rumput
+        }
+        draw(time) {
+            const sway = Math.sin(time + this.phase) * this.swayMax;
+            ctx.beginPath();
+            ctx.moveTo(this.x, canvas.height);
+            ctx.lineTo(this.x + sway, canvas.height - this.height);
+            ctx.strokeStyle = "#169443"; // Hijau rumput sedikit kontras
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+    }
+
+    // Class untuk Padang Bunga
+    class TulipField {
+        constructor(x, height) {
+            this.baseX = x;                     
+            this.baseY = canvas.height;         
+            this.stemHeight = height;           
+            this.pixelSize = 3;                 
+            
+            this.phase = x * 0.015;             
+            this.swayMax = 10 + Math.random() * 8; 
+        }
+        
+        draw(time) {
+            const sway = Math.sin(time + this.phase) * this.swayMax;
+            const tipX = this.baseX + sway;
+            const tipY = this.baseY - this.stemHeight;
+            
+            // 1. Gambar Batang Melengkung
+            ctx.beginPath();
+            ctx.moveTo(this.baseX, this.baseY);
+            ctx.quadraticCurveTo(this.baseX, tipY + this.stemHeight / 2, tipX, tipY);
+            ctx.strokeStyle = tulipColorStem;
+            ctx.lineWidth = this.pixelSize;
+            ctx.stroke();
+            
+            const ps = this.pixelSize;
+
+            // 2. Tambahan Tangkai Daun (Tumbuh di 40% tinggi batang)
+            const midX = this.baseX + sway * 0.4;
+            const midY = this.baseY - this.stemHeight * 0.7;
+            ctx.fillStyle = tulipColorStem;
+            
+            // Daun Kiri (melengkung pixel ke atas-kiri)
+            ctx.fillRect(midX - ps, midY, ps, ps);
+            ctx.fillRect(midX - ps * 2, midY - ps, ps, ps);
+            
+            // Daun Kanan (melengkung pixel ke atas-kanan, tidak simetris agar alami)
+            ctx.fillRect(midX + ps, midY - ps * 0.5, ps, ps);
+            ctx.fillRect(midX + ps * 2, midY - ps * 1.5, ps, ps);
+            
+            // 3. Gambar Kuncup Bunga Tulip
+            // Bagian bawah bunga (Agak gelap)
+            ctx.fillStyle = tulipColorDark;
+            ctx.fillRect(tipX - ps * 1.5, tipY, ps * 3, ps);
+            
+            // Bagian tengah bunga (Lebar & Terang)
+            ctx.fillStyle = tulipColorPrimary;
+            ctx.fillRect(tipX - ps * 2.5, tipY - ps * 2, ps * 5, ps * 2);
+            
+            // 3 Ujung Kelopak Bunga khas Tulip Art
+            ctx.fillRect(tipX - ps * 2.5, tipY - ps * 3, ps, ps); // Kiri
+            ctx.fillRect(tipX - ps * 0.5, tipY - ps * 3, ps, ps); // Tengah
+            ctx.fillRect(tipX + ps * 1.5, tipY - ps * 3, ps, ps); // Kanan
+        }
+    }
+    
+    // Tanam bunga dan rumput berjejer secara prosedural
+    function initTulips() {
+        tulips = [];
+        grassBlades = [];
+        
+        // Inisialisasi Tulip
+        const spacing = 15; 
+        const count = Math.floor(canvas.width / spacing); 
+        for (let i = 0; i < count; i++) {
+            const x = (i * spacing) + (Math.random() * 4); 
+            const height = 45 + Math.random() * 45; 
+            tulips.push(new TulipField(x, height));
+        }
+
+        // Inisialisasi Rumput (Rapat tiap 4px sepanjang batas bawah)
+        for (let x = 0; x < canvas.width; x += 4) {
+            grassBlades.push(new GrassBlade(x));
+        }
+    }
+    
+    // Loop Animasi Render
+    let globalTime = 0;
+    function animateField() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        globalTime += 0.02; // Kecepatan tiupan angin sepoi-sepoi
+        
+        // Render hamparan rumput di background bawah terlebih dahulu
+        grassBlades.forEach(blade => {
+            blade.draw(globalTime);
+        });
+
+        // Render batang, daun, dan bunga tulip di lapisan depannya
+        tulips.forEach(tulip => {
+            tulip.draw(globalTime);
+        });
+        
+        requestAnimationFrame(animateField);
+    }
+    
+    setTimeout(() => {
+        resizeCanvas();
+        animateField();
+    }, 100);
+    
+    window.addEventListener("resize", resizeCanvas);
 
 });
