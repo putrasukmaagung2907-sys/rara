@@ -5,7 +5,7 @@
     --bg-elevated: #242424;
     --text-base: #b3b3b3;
     --text-highlight: #ffffff;
-    --primary-color: #1db954;
+    --primary-color: #1db954; /* Warna hijau Spotify kamu */
     --gradient-top: #800000;
     --font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -14,7 +14,7 @@
     margin: 0; 
     padding: 0; 
     box-sizing: border-box; 
-    -webkit-tap-highlight-color: transparent; /* Ini yang menghilangkan blok biru di HP */
+    -webkit-tap-highlight-color: transparent; 
 }
 body { font-family: var(--font-family); background-color: var(--bg-base); color: var(--text-base); overflow-x: hidden; }
 a { text-decoration: none; color: inherit; }
@@ -239,13 +239,39 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
 
 @keyframes zoomIn { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
 
-/* PETA */
+/* PETA & LOADING UNTUK FOTO DI PETA */
 #mapContainer { width: 80%; height: 80%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); animation: zoomIn 0.3s ease; z-index: 10010; }
 .leaflet-popup-content-wrapper { background-color: #121212; color: #ffffff; border-radius: 8px; }
 .leaflet-popup-tip { background-color: #121212; }
 .leaflet-popup-content b { color: var(--primary-color); font-size: 16px; }
 .map-popup-content { display: flex; flex-direction: column; gap: 6px; width: 200px; padding: 2px; }
-.popup-map-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 4px; }
+
+.img-loader-wrapper {
+    position: relative;
+    width: 100%;
+    height: 120px;
+    background-color: #282828; 
+    border-radius: 6px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.popup-map-img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    border-radius: 6px; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0; 
+    transition: opacity 0.3s ease; 
+    z-index: 2;
+}
+
 .leaflet-popup-content p { margin: 2px 0 0 0 !important; color: #b3b3b3; font-size: 12px; line-height: 1.4; }
 
 /* SEARCH MODAL */
@@ -263,6 +289,66 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
 }
 .toast.show { opacity: 1; visibility: visible; bottom: 120px; }
 
+/* === ANIMASI LOADING FOTO MODAL FAVORIT (HATI & TEKS) === */
+.heart-loading-container {
+    display: none; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 10012;
+}
+
+.heart-loader-icon {
+    font-size: 60px; 
+    background: linear-gradient(to top, var(--primary-color) 50%, rgba(255, 255, 255, 0.2) 50%);
+    background-size: 100% 200%;
+    background-position: top;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fillHeart 1.5s ease-in-out infinite alternate;
+}
+
+.loading-text {
+    margin-top: 15px;
+    color: var(--primary-color);
+    font-size: 16px;
+    font-style: italic; 
+    font-weight: bold;
+    letter-spacing: 1px;
+    animation: pulseText 1.5s infinite ease-in-out;
+}
+
+/* === LOADING UNTUK FOTO DI PETA (MINI HEART) === */
+.small-loader {
+    border: none; 
+    width: auto;
+    height: auto;
+}
+
+.small-loader::before {
+    content: "\f004"; 
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 24px;
+    background: linear-gradient(to top, var(--primary-color) 50%, rgba(255, 255, 255, 0.2) 50%);
+    background-size: 100% 200%;
+    background-position: top;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fillHeart 1.5s ease-in-out infinite alternate;
+    display: block;
+}
+
+@keyframes fillHeart {
+    0% { background-position: top; }   
+    100% { background-position: bottom; } 
+}
+
+@keyframes pulseText {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; } 
+}
 
 /* =========================================
    RESPONSIVE DESIGN (KHUSUS HP & TABLET)
@@ -312,13 +398,13 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
     }
     .now-playing { 
     width: 100%; 
-    justify-content: flex-start; /* Mengubah susunan agar merapat ke kiri */
+    justify-content: flex-start; 
     }
 
     .now-playing .track-info {
-    margin-right: auto; /* Mendorong tombol love mentok ke ujung kanan */
-    text-align: left; /* Memastikan teks rata kiri sejajar dengan foto */
-    overflow: hidden; /* Mencegah teks keluar batas jika judul lagunya sangat panjang */
+    margin-right: auto; 
+    text-align: left; 
+    overflow: hidden; 
     }
     .player-controls { width: 100%; }
     .right-controls { display: none; }
@@ -326,25 +412,20 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
     #mapContainer { width: 95%; height: 70%; }
     .modal-content { width: 95%; height: auto; max-height: 70vh; object-fit: contain; }
     .close-map-modal, .close-modal, .close-video-modal, .close-search-modal { top: 10px; right: 15px; font-size: 40px; }
-    /* =========================================
-       PERBAIKAN ACTION BAR & TOAST DI HP
-       ========================================= */
        
-    /* 1. Merapikan tombol agar turun ke bawah dan tidak terpotong */
     .action-bar {
         padding: 15px 20px;
         gap: 15px; 
-        flex-wrap: wrap; /* Kunci utamanya: mengizinkan elemen turun ke baris baru */
+        flex-wrap: wrap; 
     }
     
     .action-right {
         margin-left: 0;
-        width: 100%; /* Memaksa bagian kanan turun ke baris kedua */
+        width: 100%; 
         justify-content: space-between;
         margin-top: 10px;
     }
 
-    /* 2. Menaikkan posisi notifikasi agar tidak tertutup pemutar musik HP */
     .toast {
         bottom: 170px !important; 
     }

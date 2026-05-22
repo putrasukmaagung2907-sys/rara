@@ -214,7 +214,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const sidebarLeft = document.querySelector(".sidebar-left");
     const mobileOverlay = document.getElementById("mobileOverlay");
 
-    // FUNGSI UMUM TUTUP MENU MOBILE
     function closeMobileMenu() {
         if (sidebarLeft && sidebarLeft.classList.contains("active")) {
             sidebarLeft.classList.remove("active");
@@ -228,14 +227,31 @@ document.addEventListener("DOMContentLoaded", function() {
     const modalImage = document.getElementById("modalImage");
     const modalCaption = document.getElementById("modalCaption");
     const closeModal = document.querySelector(".close-modal");
+    
+    const imageLoader = document.getElementById("imageLoader"); // Elemen Loader
 
     favoritesList.forEach(item => {
         item.addEventListener("click", function() {
             const imageUrl = this.getAttribute("data-image");
             const itemName = this.textContent;
+            
+            // Tampilkan modal dan animasi loading, sembunyikan foto & teks lama
+            imageModal.style.display = "flex";
+            imageLoader.style.display = "flex";
+            modalImage.style.display = "none";
+            modalCaption.style.display = "none";
+
+            // Atur URL gambar (browser mulai mendownload)
             modalImage.src = imageUrl;
             modalCaption.textContent = itemName;
-            imageModal.style.display = "flex";
+
+            // Tunggu sampai gambar selesai didownload
+            modalImage.onload = function() {
+                imageLoader.style.display = "none";
+                modalImage.style.display = "block";
+                modalCaption.style.display = "block";
+            };
+
             closeMobileMenu();
         });
     });
@@ -289,7 +305,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 const marker = L.marker([dest.lat, dest.lng]).addTo(map);
                 marker.bindPopup(`
                     <div class="map-popup-content">
-                        <img src="${dest.image}" class="popup-map-img" alt="${dest.title}">
+                        <div class="img-loader-wrapper">
+                            <div class="small-loader"></div>
+                            <img src="${dest.image}" class="popup-map-img" alt="${dest.title}" onload="this.style.opacity=1; this.previousElementSibling.style.display='none';">
+                        </div>
                         <b>${dest.title}</b>
                         <p>${dest.desc}</p>
                     </div>
@@ -336,47 +355,27 @@ document.addEventListener("DOMContentLoaded", function() {
     const closeVideoModal = document.querySelector(".close-video-modal");
     const myVideo = document.getElementById("myVideo");
     
-    // Variabel untuk mengingat apakah lagu sedang menyala sebelum video diklik
     let wasMusicPlaying = false; 
 
     if (btnHaiSayang) {
         btnHaiSayang.addEventListener("click", () => {
-            // 1. Ingat status musik saat ini
             wasMusicPlaying = isPlaying; 
-            
-            // 2. Jika musik sedang menyala, JEDA (pause) musiknya
-            if (isPlaying) {
-                pauseTrack(); 
-            }
-            
-            // 3. Tampilkan dan putar video
+            if (isPlaying) { pauseTrack(); }
             videoModal.style.display = "flex";
             myVideo.play(); 
         });
     }
 
-    // Fungsi gabungan untuk menutup video
     function closeVideoAndResumeMusic() {
         videoModal.style.display = "none";
-        myVideo.pause(); // Jeda video agar tidak bocor di background
-        
-        // Putar kembali musik HANYA JIKA sebelum video dibuka musiknya memang sedang menyala
-        if (wasMusicPlaying) {
-            playTrack();
-        }
+        myVideo.pause(); 
+        if (wasMusicPlaying) { playTrack(); }
     }
 
-    // Pasang fungsi tutup ke tombol X
-    if (closeVideoModal) {
-        closeVideoModal.addEventListener("click", closeVideoAndResumeMusic);
-    }
-
-    // Pasang fungsi tutup jika area hitam di luar video diklik
+    if (closeVideoModal) { closeVideoModal.addEventListener("click", closeVideoAndResumeMusic); }
     if (videoModal) {
         videoModal.addEventListener("click", (e) => {
-            if (e.target === videoModal) {
-                closeVideoAndResumeMusic();
-            }
+            if (e.target === videoModal) { closeVideoAndResumeMusic(); }
         });
     }
 
@@ -423,7 +422,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Tombol Search (Kiri dan Kanan)
+    // Tombol Search
     function openSearch(e) {
         e.preventDefault();
         closeMobileMenu();
@@ -433,7 +432,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (btnSearch) btnSearch.addEventListener("click", openSearch);
     if (btnSearchRight) btnSearchRight.addEventListener("click", openSearch);
 
-    // Pencarian Real-Time
     if (searchInput) {
         searchInput.addEventListener("keyup", function(e) {
             const term = e.target.value.toLowerCase();
@@ -450,42 +448,36 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    if (closeSearchModal) {
-        closeSearchModal.addEventListener("click", () => { searchModal.style.display = "none"; });
-    }
+    if (closeSearchModal) { closeSearchModal.addEventListener("click", () => { searchModal.style.display = "none"; }); }
     if (searchModal) {
         searchModal.addEventListener("click", (e) => {
             if (e.target === searchModal) searchModal.style.display = "none";
         });
     }
+
     // === FITUR INTERAKSI ACTION BAR (Tengah) ===
     const btnActionHeart = document.getElementById("btnActionHeart");
     const btnActionDownload = document.getElementById("btnActionDownload");
     const btnActionMore = document.getElementById("btnActionMore");
     const btnCustomOrder = document.getElementById("btnCustomOrder");
 
-    // 1. Interaksi Ikon Love (Playlist)
     if (btnActionHeart) {
         btnActionHeart.addEventListener("click", function() {
             const icon = this.querySelector("i");
-            // Toggle ganti ikon regular/solid
             if (icon.classList.contains("fa-regular")) {
                 icon.classList.replace("fa-regular", "fa-solid");
-                this.style.color = "var(--primary-color)"; // Ubah warna jadi hijau
+                this.style.color = "var(--primary-color)"; 
                 showToast("Playlist ditambahkan ke Favorit! 💚");
             } else {
                 icon.classList.replace("fa-solid", "fa-regular");
-                this.style.color = ""; // Kembalikan warna ke abu-abu
+                this.style.color = ""; 
                 showToast("Playlist dihapus dari Favorit 💔");
             }
         });
     }
 
-    // 2. Interaksi Ikon Download
     if (btnActionDownload) {
         btnActionDownload.addEventListener("click", function() {
-            const icon = this.querySelector("i");
-            // Jika belum hijau, jadikan hijau (seolah sudah didownload)
             if (this.style.color !== "var(--primary-color)") {
                 this.style.color = "var(--primary-color)";
                 showToast("Mengunduh playlist... 📥");
@@ -496,31 +488,28 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 3. Interaksi Titik Tiga
     if (btnActionMore) {
         btnActionMore.addEventListener("click", function() {
             showToast("Membuka menu opsi lainnya... ⚙️");
         });
     }
-    // 4. Interaksi Custom Order (Sortir)
+    
     if (btnCustomOrder) {
-        // Array urutan teks
         const orderTypes = ["Custom order", "Title", "Artist", "Album"];
         let currentOrderIndex = 0;
 
         btnCustomOrder.addEventListener("click", function() {
             currentOrderIndex++;
-            // Jika sudah di ujung array, kembali ke awal
             if (currentOrderIndex >= orderTypes.length) {
                 currentOrderIndex = 0;
             }
-            
             const newOrderText = orderTypes[currentOrderIndex];
-            // Ubah isi teks, tapi pertahankan ikon panah ke bawah
             this.innerHTML = `${newOrderText} <i class="fa-solid fa-caret-down"></i>`;
-            
             showToast(`Mengurutkan berdasarkan: ${newOrderText} 🔄`);
-        // === FITUR WAKE LOCK (Mencegah Layar Mati) ===
+        });
+    }
+
+    // === FITUR WAKE LOCK (Mencegah Layar Mati) ===
     let wakeLock = null;
 
     async function requestWakeLock() {
@@ -534,7 +523,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Panggil fungsi ini saat tombol play dipencet
     mainPlayBtn.addEventListener("click", () => {
         if (!isPlaying) requestWakeLock();
     });
@@ -542,12 +530,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!isPlaying) requestWakeLock();
     });
 
-    // Lepaskan wake lock jika tab disembunyikan untuk hemat baterai
     document.addEventListener('visibilitychange', async () => {
         if (wakeLock !== null && document.visibilityState === 'visible') {
             requestWakeLock();
         }
     });
-        });
-    }
+
 });
