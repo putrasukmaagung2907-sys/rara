@@ -360,7 +360,7 @@ document.addEventListener("DOMContentLoaded", function() {
         function initTulips() {
             tulips = [];
             grassBlades = [];
-            const tulipSpacing = 13; 
+            const tulipSpacing = 25; 
             const count = Math.floor(canvas.width / tulipSpacing); 
             for (let i = 0; i < count; i++) {
                 const x = (i * tulipSpacing) + (Math.random() * 5); 

@@ -178,10 +178,9 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
 
 #tulipCanvas {
     position: absolute;
-    top: 0; /* Berubah: menempel ke atas, bukan ke bawah */
+    top: 0; 
     left: 0;
     width: 100%;
-    /* height: 100%; <-- BARIS INI WAJIB DIHAPUS */
     z-index: 1;
     pointer-events: none;
     opacity: 0.5;
