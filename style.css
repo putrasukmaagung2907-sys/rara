@@ -448,3 +448,7 @@ button { background: none; border: none; color: inherit; cursor: pointer; font-f
     .toast { bottom: 170px !important; }
     .toast.show { bottom: 180px !important; }
 }
+
+#myVideo {
+    animation: none !important;
+}
