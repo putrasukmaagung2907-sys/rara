@@ -35,7 +35,7 @@
                 <li><a href="#" id="btnDestination"><i class="fa-solid fa-book-open"></i> Your Destination</a></li>
             </ul>
             <ul class="nav-links action-links">
-                <li><a href="#" id="btnCreatePlaylist"><div class="icon-box plus"><i class="fa-solid fa-plus"></i></div> Create Playlist</a></li>
+                <li><a href="#" id="btnCreatePlaylist"><div class="icon-box plus"><i class="fa-solid fa-plus"></i></div> A little celebration</a></li>
                 <li><a href="#" id="btnLikedSongs"><div class="icon-box heart"><i class="fa-solid fa-heart"></i></div> Liked Songs</a></li>
             </ul>
             <div class="divider"></div>
@@ -261,6 +261,19 @@
                             <td><img src="suk.jpeg" class="added-by-avatar" alt="Sukma"></td>
                             <td>2:05</td>
                         </tr>
+                         <tr>
+                            <td>12</td>
+                            <td class="title-cell">
+                                <img src="tentangmu.jpeg" alt="Cover">
+                                <div class="title-info">
+                                    <span class="song-name">tentangmu</span>
+                                    <span class="artist-name">yasu</span>
+                                </div>
+                            </td>
+                            <td>yasu</td>
+                            <td><img src="tentangmu.jpeg" class="added-by-avatar" alt="Sukma"></td>
+                            <td>2:58</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -376,6 +389,35 @@
             <div class="search-container">
                 <h2>Cari Lagu atau Artis</h2>
                 <input type="text" id="searchInput" placeholder="Ketik nama lagu atau artis di sini...">
+            </div>
+        </div>
+
+        <!-- MODAL KALENDER KENANGAN -->
+        <div id="calendarModal" class="image-modal">
+            <span class="close-calendar-modal">&times;</span>
+            <div class="calendar-container">
+                <h2 class="calendar-title">Kalender Kenangan ✨</h2>
+        
+        <!-- Header Navigasi Bulan -->
+        <div class="calendar-header">
+            <button id="prevMonthBtn"><i class="fa-solid fa-chevron-left"></i></button>
+            <h3 class="calendar-month" id="calendarMonthText">Mei 2026</h3>
+            <button id="nextMonthBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Isi kalender akan di-generate oleh JavaScript -->
+                </div>
+
+                <!-- Kotak Pesan yang muncul saat tanggal diklik -->
+         <div id="calendarMessage" class="calendar-message-box">
+                  <h4 id="messageTitle">Judul Pesan</h4>
+                     <p id="messageContent">Isi pesan romantis untuk Rara muncul di sini...</p>
+            
+                 <!-- Tambahan Tombol Media (Default disembunyikan) -->
+                     <button id="mediaBtn" class="calendar-media-btn" style="display: none;"><i class="fa-solid fa-image"></i> Lihat Kenangan</button>
+            
+                     <button id="closeMessageBtn">Tutup</button>
+                 </div>
             </div>
         </div>
 

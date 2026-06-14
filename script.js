@@ -41,7 +41,8 @@ document.addEventListener("DOMContentLoaded", function() {
         { title: "Let me stay", artist: "Brian Rahmattio", cover: "Brian.png", file: "LMS.mp3" },
         { title: "real love", artist: "Skyline", cover: "Skyline.png", file: "Skyline.mp3" },
         { title: "Monolog", artist: "Pamungkas", cover: "Pamungkas.png", file: "Monolog.mp3" },
-        { title: "Love Song", artist: "Grrrl Gang", cover: "Grrrl.png", file: "lovesong.mp3" }
+        { title: "Love Song", artist: "Grrrl Gang", cover: "Grrrl.png", file: "lovesong.mp3" },
+        { title: "Tentangmu", artist: "yasu", cover: "tentangmu.jpeg", file: "tentangmu.mp3" }
     ];
 
     let currentTrackIndex = 0;
@@ -238,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function() {
             
             // Tampilkan modal dan animasi loading, sembunyikan foto & teks lama
             imageModal.style.display = "flex";
-            imageLoader.style.display = "block";
+            imageLoader.style.display = "flex";
             modalImage.style.display = "none";
             modalCaption.style.display = "none";
 
@@ -363,13 +364,14 @@ document.addEventListener("DOMContentLoaded", function() {
             wasMusicPlaying = isPlaying; 
             if (isPlaying) pauseTrack();
             
-            // 1. Munculkan modalnya dulu
+            // Set sumber video kembalikan ke awal & z-index normal
+            videoModal.style.zIndex = "10010";
+            myVideo.src = "haiiii.mp4"; 
             videoModal.style.display = "flex"; 
             
-            // 2. Beri jeda 50 milidetik agar HP selesai menggambar layar, baru putar
             setTimeout(() => {
-                myVideo.load(); // Pancing ulang videonya
-                myVideo.play(); // Putar video
+                myVideo.load(); 
+                myVideo.play(); 
             }, 50);
         });
     }
@@ -414,14 +416,199 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    if (btnCreatePlaylist) {
-        btnCreatePlaylist.addEventListener("click", (e) => {
-            e.preventDefault();
-            closeMobileMenu();
-            showToast("Fitur membuat playlist segera hadir! 🎵");
+    // ==========================================================
+    // === FITUR KALENDER KENANGAN ("A Little Celebration") ===
+    // ==========================================================
+    const calendarModal = document.getElementById("calendarModal");
+    const closeCalendarModal = document.querySelector(".close-calendar-modal");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const calendarMessageBox = document.getElementById("calendarMessage");
+    const messageTitle = document.getElementById("messageTitle");
+    const messageContent = document.getElementById("messageContent");
+    const closeMessageBtn = document.getElementById("closeMessageBtn");
+    
+    // Elemen Navigasi Bulan
+    const calendarMonthText = document.getElementById("calendarMonthText");
+    const prevMonthBtn = document.getElementById("prevMonthBtn");
+    const nextMonthBtn = document.getElementById("nextMonthBtn");
+
+    // DATA KENANGAN DINAMIS
+    const memoryDates = { 
+        "2026-05-13": { 
+            title: "Awal cerita kita 💖", 
+            text: "Hari di mana semuanya berubah jadi lebih indah semenjak ada kamu di hidupku.",
+            mediaType: "image",
+            media: "13mei.jpeg"
+        },
+        "2026-05-14": { 
+            title: "Perjalanan kedua 💖", 
+            text: "Hari ini aku masih merasa canggung, ini awal-awal kamu tau aktivitas lari aku, belum ada laporan my gizi, masih bingung nlpn kamu bisa kapan aja.",
+            mediaType: "image",
+            media: "joko.jpeg"
+        },
+        "2026-05-15": { 
+            title: "Perjalanan ketiga 💖", 
+            text: "Hari ini party bangat, aku ngobrol sama ibu kamu. Ditanyai banyak hal pakai bahasa minang. Hari ini aku dapat pap pertama dari kamu mwehehe",
+        },
+        "2026-05-16": { 
+            title: "Perjalanan ketiga 💖", 
+            text: "Hari ini party bangat, aku ngobrol sama ibu kamu. Ditanyai banyak hal pakai bahasa minang. Hari ini aku dapat pap pertama dari kamu mwehehe. belum ada kata sayang",
+        },
+        "2026-06-11": { 
+            title: "Virtual Movie Date 🎬", 
+            text: "Walau cuma nonton lewat layar masing-masing, denger suara tawamu aja udah cukup bikin aku bahagia.",
+            mediaType: "video",
+            media: "anniv_video.mp4" // Ganti dengan video anniversary
+        }
+    };
+
+    let currentDate = new Date(2026, 4, 1); 
+    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+    function renderCalendar() {
+        calendarGrid.innerHTML = "";
+        
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        calendarMonthText.textContent = `${monthNames[month]} ${year}`;
+
+        const daysOfWeek = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+        daysOfWeek.forEach(day => {
+            const el = document.createElement("div");
+            el.className = "day-name";
+            el.textContent = day;
+            calendarGrid.appendChild(el);
+        });
+
+        const firstDayIndex = new Date(year, month, 1).getDay(); 
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        for(let i = 0; i < firstDayIndex; i++) {
+            const emptyEl = document.createElement("div");
+            emptyEl.className = "calendar-day empty";
+            calendarGrid.appendChild(emptyEl);
+        }
+
+        for(let i = 1; i <= daysInMonth; i++) {
+            const dayEl = document.createElement("div");
+            dayEl.className = "calendar-day";
+            dayEl.textContent = i;
+
+            const monthString = String(month + 1).padStart(2, '0'); 
+            const dayString = String(i).padStart(2, '0'); 
+            const dateKey = `${year}-${monthString}-${dayString}`;
+
+            if(memoryDates[dateKey]) {
+                dayEl.classList.add("special-date");
+                const dot = document.createElement("div");
+                dot.className = "blue-dot";
+                dayEl.appendChild(dot);
+
+                dayEl.addEventListener("click", () => {
+                    messageTitle.textContent = memoryDates[dateKey].title;
+                    messageContent.textContent = memoryDates[dateKey].text;
+                    
+                    const mediaBtn = document.getElementById("mediaBtn");
+                    
+                    if(memoryDates[dateKey].media) {
+                        mediaBtn.style.display = "inline-block"; 
+                        
+                        if(memoryDates[dateKey].mediaType === "video") {
+                            mediaBtn.innerHTML = '<i class="fa-solid fa-video"></i> Putar Video';
+                            mediaBtn.onclick = () => {
+                                const videoModal = document.getElementById("videoModal");
+                                const myVideo = document.getElementById("myVideo");
+                                wasMusicPlaying = isPlaying;
+                                if (isPlaying) pauseTrack();
+                                
+                                myVideo.src = memoryDates[dateKey].media;
+                                videoModal.style.zIndex = "10020"; 
+                                videoModal.style.display = "flex";
+                                setTimeout(() => { myVideo.load(); myVideo.play(); }, 50);
+                            };
+                        } else {
+                            mediaBtn.innerHTML = '<i class="fa-solid fa-image"></i> Lihat Foto';
+                            mediaBtn.onclick = () => {
+                                const imageModal = document.getElementById("imageModal");
+                                const modalImage = document.getElementById("modalImage");
+                                const modalCaption = document.getElementById("modalCaption");
+                                const imageLoader = document.getElementById("imageLoader");
+
+                                imageModal.style.zIndex = "10020"; 
+                                imageModal.style.display = "flex";
+                                imageLoader.style.display = "flex";
+                                modalImage.style.display = "none";
+                                modalCaption.style.display = "none";
+
+                                modalImage.src = memoryDates[dateKey].media;
+                                modalCaption.textContent = memoryDates[dateKey].title;
+
+                                modalImage.onload = function() {
+                                    imageLoader.style.display = "none";
+                                    modalImage.style.display = "block";
+                                    modalCaption.style.display = "block";
+                                };
+                            };
+                        }
+                    } else {
+                        mediaBtn.style.display = "none";
+                    }
+
+                    calendarMessageBox.style.display = "flex";
+                });
+            }
+            calendarGrid.appendChild(dayEl);
+        }
+    }
+
+    if (prevMonthBtn) {
+        prevMonthBtn.addEventListener("click", () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
         });
     }
 
+    if (nextMonthBtn) {
+        nextMonthBtn.addEventListener("click", () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        });
+    }
+
+    if (btnCreatePlaylist) {
+        btnCreatePlaylist.addEventListener("click", (e) => {
+            e.preventDefault();
+            closeMobileMenu(); 
+            currentDate = new Date(2026, 4, 1);
+            renderCalendar();
+            calendarModal.style.display = "flex";
+        });
+    }
+
+    if (closeCalendarModal) {
+        closeCalendarModal.addEventListener("click", () => {
+            calendarModal.style.display = "none";
+            calendarMessageBox.style.display = "none"; 
+        });
+    }
+
+    if (closeMessageBtn) {
+        closeMessageBtn.addEventListener("click", () => {
+            calendarMessageBox.style.display = "none";
+        });
+    }
+
+    if (calendarModal) {
+        calendarModal.addEventListener("click", (e) => {
+            if (e.target === calendarModal) {
+                calendarModal.style.display = "none";
+                calendarMessageBox.style.display = "none";
+            }
+        });
+    }
+
+    // Lanjutan Menu Lain
     if (btnLikedSongs) {
         btnLikedSongs.addEventListener("click", (e) => {
             e.preventDefault();
